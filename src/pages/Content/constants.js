@@ -2,6 +2,7 @@ export const ENDPOINTS = {
   session: '/status/sessions',
   metadata: '/library/metadata',
   sections: '/library/sections',
+  streams: '/library/stream',
   eventSource: '/:/eventsource/notifications',
 };
 

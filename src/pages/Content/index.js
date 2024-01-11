@@ -8,17 +8,28 @@ class SubSeek {
     this.api = new Api(token, serverUrl);
   }
 
-  async currentlyWatching() {
-    const eventSource = this.api.beginEventSource();
-    setTimeout(() => {
-      console.log('seek closing event source!');
-      eventSource.close();
-    }, 60 * 1000);
+  async getSubtitles() {
+    const resp = await this.api.currentlyWatching(); // this doesn't work everywhere. Use the API!
+    const streams = resp.children[0].Media.children[0].Part.children;
 
-    // const resp = await this.api.currentlyWatching();
-    // const streams = resp.children[0].Media.children[0].Part.children;
-    // console.log(resp, 'seek metadata');
-    // console.log(streams, 'seek streams');
+    const subStream = streams.find(({ Stream }) => {
+      return (
+        (Stream.format === 'srt' || Stream.codec === 'srt') && !!Stream.key
+      );
+    });
+
+    /**
+     * if it doesn't have a subtitle file use GET `/library/metadata/subtitles/<file id>`
+     * to do a search.
+     */
+
+    console.log(streams, 'seek streams');
+    if (subStream?.Stream) {
+      console.log(subStream, 'seek subStream');
+      this.api.getSubFile(subStream.Stream.key).then((sub) => {
+        console.log(sub, 'seek SUB FILE?????');
+      });
+    }
   }
 
   async getSession() {
@@ -35,8 +46,7 @@ class SubSeek {
 const start = async () => {
   const { token, serverUrl } = await getUrl();
   const seek = new SubSeek(token, serverUrl);
-  seek.getSections();
-  seek.currentlyWatching();
+  seek.getSubtitles();
 };
 
 setTimeout(() => {

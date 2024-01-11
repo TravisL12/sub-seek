@@ -15,6 +15,12 @@ class Api {
     return base;
   }
 
+  async getSubFile(subKey) {
+    const url = this.buildRequest(subKey);
+    const resp = await fetchData(url, false);
+    return resp;
+  }
+
   beginEventSource() {
     const filters = 'activity,playing';
     const url = this.buildRequest(ENDPOINTS.eventSource, filters);
