@@ -9,20 +9,33 @@ class SubSeek {
   }
 
   async currentlyWatching() {
-    const resp = await this.api.currentlyWatching();
-    console.log(resp, 'seek metadata');
+    const eventSource = this.api.beginEventSource();
+    setTimeout(() => {
+      console.log('seek closing event source!');
+      eventSource.close();
+    }, 60 * 1000);
+
+    // const resp = await this.api.currentlyWatching();
+    // const streams = resp.children[0].Media.children[0].Part.children;
+    // console.log(resp, 'seek metadata');
+    // console.log(streams, 'seek streams');
   }
 
   async getSession() {
     const resp = await this.api.getSession();
     console.log(resp, 'seek session');
   }
+
+  async getSections() {
+    const resp = await this.api.getSections();
+    console.log(resp, 'seek sections');
+  }
 }
 
 const start = async () => {
   const { token, serverUrl } = await getUrl();
   const seek = new SubSeek(token, serverUrl);
-  seek.getSession();
+  seek.getSections();
   seek.currentlyWatching();
 };
 

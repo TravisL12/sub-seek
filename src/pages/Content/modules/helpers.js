@@ -32,11 +32,14 @@ export const parseXml = (xmlString) => {
   return output;
 };
 
-export const fetchData = async (url) => {
+export const fetchData = async (url, shouldParseXml = true) => {
   const resp = await fetch(url);
   const text = await resp.text();
-  const output = parseXml(text);
-  return output;
+  if (shouldParseXml) {
+    const output = parseXml(text);
+    return output;
+  }
+  return text;
 };
 
 export const getUrl = async () => {
@@ -48,6 +51,9 @@ export const getUrl = async () => {
     MediaContainer: { children: devices },
   } = parseXml(text);
 
+  // devices for local and remote sessions can share have the
+  // same token. Setup logic to choose the remote session
+  // assuming that that session is most likely to work
   const output = devices.map(({ Device }) => {
     const token = Device.accessToken;
     return Device.children

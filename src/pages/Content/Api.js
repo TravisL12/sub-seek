@@ -7,8 +7,26 @@ class Api {
     this.serverUrl = serverUrl;
   }
 
-  buildRequest(endpoint) {
-    return `${this.serverUrl}${endpoint}?X-Plex-Token=${this.token}`;
+  buildRequest(endpoint, filters) {
+    let base = `${this.serverUrl}${endpoint}?X-Plex-Token=${this.token}`;
+    if (filters) {
+      base += `&filters=${filters}`;
+    }
+    return base;
+  }
+
+  beginEventSource() {
+    const filters = 'activity,playing';
+    const url = this.buildRequest(ENDPOINTS.eventSource, filters);
+    const eventSource = new EventSource(url);
+
+    ['activity', 'ping', 'playing'].forEach((item) => {
+      eventSource.addEventListener(item, (event) => {
+        console.log(`seek ${item} event:`, JSON.parse(event.data));
+      });
+    });
+
+    return eventSource;
   }
 
   async currentlyWatching() {
@@ -24,6 +42,12 @@ class Api {
 
   async getSession() {
     const url = this.buildRequest(ENDPOINTS.session);
+    const resp = await fetchData(url);
+    return resp;
+  }
+
+  async getSections() {
+    const url = this.buildRequest(ENDPOINTS.sections);
     const resp = await fetchData(url);
     return resp;
   }
