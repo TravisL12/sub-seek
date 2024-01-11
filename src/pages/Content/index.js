@@ -1,41 +1,28 @@
-import { ENDPOINTS } from './constants';
-import { fetchData, getUrl } from './modules/helpers';
+import Api from './Api';
+import { getUrl } from './modules/helpers';
 
 console.log('I am the SubSeek content file');
 
 class SubSeek {
   constructor(token, serverUrl) {
-    this.token = token;
-    this.serverUrl = serverUrl;
-  }
-
-  buildRequest(endpoint) {
-    return `${this.serverUrl}${endpoint}?X-Plex-Token=${this.token}`;
+    this.api = new Api(token, serverUrl);
   }
 
   async currentlyWatching() {
-    // fetch from the URL
-    const query = location.hash.split('?')[1];
-    const params = Object.fromEntries(new URLSearchParams(query));
-    if (params.key) {
-      const url = this.buildRequest(params.key);
-      const resp = await fetchData(url);
-      console.log(resp.MediaContainer.children[0].Video, 'seek metadata');
-    }
+    const resp = await this.api.currentlyWatching();
+    console.log(resp, 'seek metadata');
   }
 
   async getSession() {
-    const url = this.buildRequest(ENDPOINTS.session);
-    const resp = await fetchData(url);
-    console.log(resp, 'seek session object');
+    const resp = await this.api.getSession();
+    console.log(resp, 'seek session');
   }
 }
 
 const start = async () => {
-  const plexToken = localStorage['myPlexAccessToken'];
-  const { token, serverUrl } = await getUrl(plexToken);
+  const { token, serverUrl } = await getUrl();
   const seek = new SubSeek(token, serverUrl);
-  // seek.getSession();
+  seek.getSession();
   seek.currentlyWatching();
 };
 

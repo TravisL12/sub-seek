@@ -39,7 +39,8 @@ export const fetchData = async (url) => {
   return output;
 };
 
-export const getUrl = async (plexToken) => {
+export const getUrl = async () => {
+  const plexToken = localStorage['myPlexAccessToken'];
   const url = `${PLEX_TV_URL}&X-Plex-Token=${plexToken}`;
   const result = await fetch(url);
   const text = await result.text();
