@@ -1,7 +1,1 @@
-chrome.action.onClicked.addListener((tab) => {
-  console.log('subseek CLICKED!');
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ['../Content/index.js'],
-  });
-});
+console.log('I am in the Background');
