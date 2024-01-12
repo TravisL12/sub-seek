@@ -4,10 +4,10 @@ import { getUrl, wait } from './modules/helpers';
 import { VIDEO_PLAYER_SELECTOR } from './constants';
 
 class SubSeek {
-  constructor(token, serverUrl, vidEl) {
+  constructor(token, serverUrl) {
     this.api = new Api(token, serverUrl);
-    this.videoEl = vidEl;
     this.parser = new srtParser2();
+    this.videoEl;
   }
 
   getVideoElement() {
@@ -65,14 +65,10 @@ class SubSeek {
   }
 }
 
-const start = async (vidEl) => {
-  console.log('subseek START!', vidEl);
+const start = async () => {
   const { token, serverUrl } = await getUrl();
-  const seek = new SubSeek(token, serverUrl, vidEl);
-  seek.getSubtitles();
-};
+  const seek = new SubSeek(token, serverUrl);
 
-const setupObserver = () => {
   const mutationObserver = new MutationObserver((mutationList) => {
     const all = mutationList
       .map((listItem) => Array.from(listItem.addedNodes))
@@ -83,8 +79,9 @@ const setupObserver = () => {
     });
 
     if (vidContainer) {
-      const vidEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
-      start(vidEl);
+      console.log('subseek START!', vidEl);
+      seek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
+      seek.getSubtitles();
     }
   });
   mutationObserver.observe(document.getElementById('plex'), {
@@ -93,4 +90,4 @@ const setupObserver = () => {
   });
 };
 
-setupObserver();
+start();
