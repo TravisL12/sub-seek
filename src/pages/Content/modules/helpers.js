@@ -1,5 +1,13 @@
 import { PLEX_TV_URL } from '../constants';
 
+export const wait = (num) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, num * 1000);
+  });
+};
+
 export const parseXml = (xmlString) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlString, 'text/xml');

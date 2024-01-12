@@ -1,5 +1,6 @@
 import Api from './Api';
-import { getUrl } from './modules/helpers';
+import srtParser2 from 'srt-parser-2';
+import { getUrl, wait } from './modules/helpers';
 
 class SubSeek {
   constructor(token, serverUrl) {
@@ -21,17 +22,22 @@ class SubSeek {
       const results = await this.api.searchSubFiles(mediaId);
       subStream = results.MediaContainer.Stream[0];
       await this.api.putSubFile(subStream, mediaId);
-      setTimeout(() => {
-        console.log('subseek REFETCH!');
-        this.getSubtitles(); // call function again to load the subtitles
-      }, 3 * 1000);
+      await wait(3);
+      console.log('subseek REFETCH!');
+      this.getSubtitles(); // call function again to load the subtitles
       return;
     }
 
     if (subStream) {
-      const subText = await this.api.getSubFile(subStream.key);
-      console.log(subText.slice(0, 100), 'subseek sub text truncated');
+      const subtitleText = await this.api.getSubFile(subStream.key);
+      this.subtitles = this.parseSubtitles(subtitleText);
     }
+  }
+
+  parseSubtitles(subtitleText) {
+    const parser = new srtParser2();
+    const parsed = parser.fromSrt(subtitleText);
+    console.log(parsed, 'subseek sub text truncated');
   }
 
   async getSession() {
