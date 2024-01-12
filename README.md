@@ -50,3 +50,9 @@ PUT
 &X-Plex-Device-Screen-Resolution=1408x595%2C1680x1050
 &X-Plex-Language=en
 &X-Plex-Session-Id=8a72f437-89e9-4ae0-82b8-c6b6853c8993
+
+### Update progress
+
+Need to stop (not pause)d! the video player, send the request, then reload the Plex client window. Then hit play again.
+
+`https://192-168-2-27.7e69df2cf3a14143b7ecdd7920a07853.plex.direct:32400/:/progress?time=3000000&key=2264&state=played&identifier=com.plexapp.plugins.library`

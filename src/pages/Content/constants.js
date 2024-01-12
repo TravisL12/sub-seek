@@ -7,3 +7,5 @@ export const ENDPOINTS = {
 };
 
 export const PLEX_TV_URL = 'https://plex.tv/pms/resources?includeHttps=1';
+
+export const VIDEO_PLAYER_SELECTOR = 'video[class^="HTMLMedia-mediaElement"]';

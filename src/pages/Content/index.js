@@ -1,10 +1,17 @@
 import Api from './Api';
 import srtParser2 from 'srt-parser-2';
 import { getUrl, wait } from './modules/helpers';
+import { VIDEO_PLAYER_SELECTOR } from './constants';
 
 class SubSeek {
-  constructor(token, serverUrl) {
+  constructor(token, serverUrl, vidEl) {
     this.api = new Api(token, serverUrl);
+    this.videoEl = vidEl;
+    this.parser = new srtParser2();
+  }
+
+  getVideoElement() {
+    return document.querySelector(VIDEO_PLAYER_SELECTOR);
   }
 
   async getSubtitles() {
@@ -34,10 +41,17 @@ class SubSeek {
     }
   }
 
-  parseSubtitles(subtitleText) {
-    const parser = new srtParser2();
-    const parsed = parser.fromSrt(subtitleText);
-    console.log(parsed, 'subseek sub text truncated');
+  async parseSubtitles(subtitleText) {
+    const parsed = this.parser.fromSrt(subtitleText);
+
+    if (!this.videoEl) {
+      this.videoEl = this.getVideoElement();
+    }
+    await wait(5);
+    if (this.videoEl) {
+      console.log(parsed[100], 'subseek NEW TIME TEMPORARY');
+      this.videoEl.currentTime = parsed[100].startSeconds;
+    }
   }
 
   async getSession() {
@@ -51,13 +65,32 @@ class SubSeek {
   }
 }
 
-const start = async () => {
+const start = async (vidEl) => {
+  console.log('subseek START!', vidEl);
   const { token, serverUrl } = await getUrl();
-  const seek = new SubSeek(token, serverUrl);
+  const seek = new SubSeek(token, serverUrl, vidEl);
   seek.getSubtitles();
 };
 
-setTimeout(() => {
-  console.log('subseek START!');
-  start();
-}, 5 * 1000);
+const setupObserver = () => {
+  const mutationObserver = new MutationObserver((mutationList) => {
+    const all = mutationList
+      .map((listItem) => Array.from(listItem.addedNodes))
+      .flat();
+
+    const vidContainer = all.find((el) => {
+      return el.querySelector(VIDEO_PLAYER_SELECTOR);
+    });
+
+    if (vidContainer) {
+      const vidEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
+      start(vidEl);
+    }
+  });
+  mutationObserver.observe(document.getElementById('plex'), {
+    subtree: true,
+    childList: true,
+  });
+};
+
+setupObserver();
