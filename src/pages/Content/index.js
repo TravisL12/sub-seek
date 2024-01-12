@@ -1,45 +1,47 @@
 import Api from './Api';
 import { getUrl } from './modules/helpers';
 
-console.log('I am the SubSeek content file');
-
 class SubSeek {
   constructor(token, serverUrl) {
     this.api = new Api(token, serverUrl);
   }
 
   async getSubtitles() {
-    const resp = await this.api.currentlyWatching(); // this doesn't work everywhere. Use the API!
-    const streams = resp.children[0].Media.children[0].Part.children;
-
-    const subStream = streams.find(({ Stream }) => {
+    // NEED BETTER WAY TO GET MEDIA ID
+    // this.api.beginEventSource();
+    const { mediaId, media } = await this.api.currentlyWatching(); // this doesn't work everywhere. Use the API!
+    const streams = media.Media[0].Part[0].Stream;
+    let subStream = streams.find((stream) => {
       return (
-        (Stream.format === 'srt' || Stream.codec === 'srt') && !!Stream.key
+        (stream.format === 'srt' || stream.codec === 'srt') && !!stream.key
       );
     });
 
-    /**
-     * if it doesn't have a subtitle file use GET `/library/metadata/subtitles/<file id>`
-     * to do a search.
-     */
+    if (!subStream) {
+      const results = await this.api.searchSubFiles(mediaId);
+      subStream = results.MediaContainer.Stream[0];
+      await this.api.putSubFile(subStream, mediaId);
+      setTimeout(() => {
+        console.log('subseek REFETCH!');
+        this.getSubtitles(); // call function again to load the subtitles
+      }, 3 * 1000);
+      return;
+    }
 
-    console.log(streams, 'seek streams');
-    if (subStream?.Stream) {
-      console.log(subStream, 'seek subStream');
-      this.api.getSubFile(subStream.Stream.key).then((sub) => {
-        console.log(sub, 'seek SUB FILE?????');
-      });
+    if (subStream) {
+      const subText = await this.api.getSubFile(subStream.key);
+      console.log(subText.slice(0, 100), 'subseek sub text truncated');
     }
   }
 
   async getSession() {
     const resp = await this.api.getSession();
-    console.log(resp, 'seek session');
+    console.log(resp, 'subseek session');
   }
 
   async getSections() {
     const resp = await this.api.getSections();
-    console.log(resp, 'seek sections');
+    console.log(resp, 'subseek sections');
   }
 }
 
@@ -50,6 +52,6 @@ const start = async () => {
 };
 
 setTimeout(() => {
-  console.log('seek START!');
+  console.log('subseek START!');
   start();
 }, 5 * 1000);

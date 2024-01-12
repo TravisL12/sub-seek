@@ -17,7 +17,26 @@ class Api {
 
   async getSubFile(subKey) {
     const url = this.buildRequest(subKey);
-    const resp = await fetchData(url, false);
+    const resp = await fetchData({ url, isJson: false });
+    return resp;
+  }
+
+  async putSubFile(subtitle, id) {
+    const { key, codec, languageCode: language, providerTitle } = subtitle;
+    const extra = `&key=${key}&hearingImpaired=0&forced=0&language=${language}&providerTitle=${providerTitle}&codec=${codec}`;
+    const url = this.buildRequest(`${ENDPOINTS.metadata}/${id}/subtitles`);
+    const resp = await fetchData({
+      url: `${url + extra}`,
+      isJson: false,
+      httpMethod: 'PUT',
+    });
+    return resp;
+  }
+
+  async searchSubFiles(id) {
+    const extra = '&language=en&hearingImpaired=0&forced=0';
+    const url = this.buildRequest(`${ENDPOINTS.metadata}/${id}/subtitles`);
+    const resp = await fetchData({ url: `${url + extra}` });
     return resp;
   }
 
@@ -28,7 +47,7 @@ class Api {
 
     ['activity', 'ping', 'playing'].forEach((item) => {
       eventSource.addEventListener(item, (event) => {
-        console.log(`seek ${item} event:`, JSON.parse(event.data));
+        console.log(`subseek ${item} event:`, JSON.parse(event.data));
       });
     });
 
@@ -41,20 +60,21 @@ class Api {
     const params = Object.fromEntries(new URLSearchParams(query));
     if (params.key) {
       const url = this.buildRequest(params.key);
-      const resp = await fetchData(url);
-      return resp.MediaContainer.children[0].Video;
+      const resp = await fetchData({ url });
+      const mediaId = params.key.split('/').slice(-1)[0]; // ugly but works
+      return { mediaId, media: resp.MediaContainer.Metadata[0] };
     }
   }
 
   async getSession() {
     const url = this.buildRequest(ENDPOINTS.session);
-    const resp = await fetchData(url);
+    const resp = await fetchData({ url });
     return resp;
   }
 
   async getSections() {
     const url = this.buildRequest(ENDPOINTS.sections);
-    const resp = await fetchData(url);
+    const resp = await fetchData({ url });
     return resp;
   }
 }

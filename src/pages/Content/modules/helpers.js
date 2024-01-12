@@ -32,20 +32,23 @@ export const parseXml = (xmlString) => {
   return output;
 };
 
-export const fetchData = async (url, shouldParseXml = true) => {
-  const resp = await fetch(url);
-  const text = await resp.text();
-  if (shouldParseXml) {
-    const output = parseXml(text);
-    return output;
+export const fetchData = async ({ url, isJson = true, httpMethod = 'GET' }) => {
+  if (isJson) {
+    return await (
+      await fetch(url, {
+        method: httpMethod,
+        headers: { accept: 'application/json' },
+      })
+    ).json();
   }
-  return text;
+
+  return await (await fetch(url, { method: httpMethod })).text();
 };
 
 export const getUrl = async () => {
   const plexToken = localStorage['myPlexAccessToken'];
   const url = `${PLEX_TV_URL}&X-Plex-Token=${plexToken}`;
-  const result = await fetch(url);
+  const result = await fetch(url); // calling to PLEX_TV_URL doesn't accept JSON
   const text = await result.text();
   const {
     MediaContainer: { children: devices },
