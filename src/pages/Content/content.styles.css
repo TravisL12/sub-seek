@@ -15,6 +15,11 @@ h3 {
   right: 0;
   color: white;
   z-index: 2000; /* Plex navbar is z-index 1000 */
+  transition: 0.4s ease-in-out transform;
+
+  &.sub-seek-closed {
+    transform: translate3d(90%, 0, 0);
+  }
 
   button {
     line-height: unset;
@@ -31,6 +36,11 @@ h3 {
 
   .media-title {
     padding: 10px;
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+    }
 
     .clear-btn {
       display: flex;

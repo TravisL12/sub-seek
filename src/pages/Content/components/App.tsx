@@ -30,7 +30,7 @@ const App = () => {
         .flat();
 
       const vidContainer = all.find((el) => {
-        return el.querySelector(VIDEO_PLAYER_SELECTOR);
+        return el?.querySelector && el.querySelector(VIDEO_PLAYER_SELECTOR);
       });
 
       if (vidContainer && subseek && !subseek.videoEl) {

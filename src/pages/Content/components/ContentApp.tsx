@@ -4,6 +4,7 @@ import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
 
 const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
+  const [isClosed, setIsClosed] = useState(false);
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [searchValue, setSearchValue] = useState('');
@@ -15,9 +16,7 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
         behavior: 'instant',
         block: 'center',
       });
-      setTimeout(() => {
-        setSelectedSub(undefined);
-      }, 3 * 1000);
+      setSelectedSub(undefined);
     }
   }, [searchValue]);
 
@@ -48,6 +47,13 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
     setFiltersubs(subtitles);
   };
 
+  const openSeekPanel = () => {
+    setIsClosed(false);
+  };
+  const closeSeekPanel = () => {
+    setIsClosed(true);
+  };
+
   const seekTo = (time: number, sub: TSubtitle) => {
     if (!subseek?.videoEl) {
       return;
@@ -65,9 +71,12 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   };
 
   return (
-    <div className="Content-App">
+    <div className={`Content-App ${isClosed ? 'sub-seek-closed' : ''}`}>
       <div className="media-title">
-        <h1>SubSeek</h1>
+        <div className="title">
+          <h1 onClick={openSeekPanel}>SubSeek</h1>
+          <button onClick={closeSeekPanel}>Close</button>
+        </div>
         <div className="clear-btn">
           <input
             placeholder="Search subtitles"
