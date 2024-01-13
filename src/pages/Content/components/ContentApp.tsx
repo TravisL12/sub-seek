@@ -6,13 +6,29 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [searchValue, setSearchValue] = useState('');
-  const [selectedSub, setSelectedSub] = useState<string>();
+  const [selectedSub, setSelectedSub] = useState<TSubtitle>();
+
+  useEffect(() => {
+    if (!searchValue && selectedSub?.ref?.current) {
+      selectedSub.ref.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      setTimeout(() => {
+        setSelectedSub(undefined);
+      }, 3 * 1000);
+    }
+  }, [searchValue]);
 
   useEffect(() => {
     const getSubs = async () => {
       const subs = await subseek.getSubtitles();
-      setSubtitles(subs);
-      setFiltersubs(subs);
+      const subsWithRef = subs.map((sub) => ({
+        ...sub,
+        ref: React.createRef(),
+      }));
+      setSubtitles(subsWithRef);
+      setFiltersubs(subsWithRef);
     };
     getSubs();
   }, [subseek]);
@@ -29,7 +45,15 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   const resetSearch = () => {
     setSearchValue('');
     setFiltersubs(subtitles);
-    setSelectedSub(undefined);
+  };
+
+  const seekTo = (time: number, sub: TSubtitle) => {
+    subseek.videoEl.currentTime = time;
+    setSelectedSub(sub);
+    sub?.ref?.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
   };
 
   return (
@@ -52,10 +76,9 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
         {filterSubs?.map((sub) => (
           <SubtitleItem
             subtitle={sub}
-            isSelected={selectedSub === sub.id}
+            isSelected={selectedSub?.id === sub.id}
             seekTo={(time: number) => {
-              subseek.videoEl.currentTime = time;
-              setSelectedSub(sub.id);
+              seekTo(time, sub);
             }}
           />
         ))}

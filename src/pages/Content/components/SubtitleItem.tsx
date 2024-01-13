@@ -15,7 +15,10 @@ const SubtitleItem = ({
   seekTo: (time: number) => void;
 }) => {
   return (
-    <div className={`subtitle-item ${isSelected ? 'selected' : ''}`}>
+    <div
+      ref={subtitle.ref}
+      className={`subtitle-item ${isSelected ? 'selected' : ''}`}
+    >
       <p className="subtitle-item--timestamp">
         {formatTimestamp(subtitle.startTime)}
       </p>

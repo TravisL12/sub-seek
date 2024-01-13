@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type TSubtitle = {
   id: string;
   startTime: string;
@@ -5,6 +7,7 @@ export type TSubtitle = {
   endTime: string;
   endSeconds: number;
   text: string;
+  ref?: React.RefObject<any>;
 };
 
 export type TSubseek = {
