@@ -5,6 +5,10 @@ import { VIDEO_PLAYER_SELECTOR } from './constants';
 
 class SubSeek {
   constructor(token, serverUrl) {
+    console.log('subseek -------');
+    console.log('subseek token', token);
+    console.log('subseek serverUrl', serverUrl);
+    console.log('subseek -------');
     this.api = new Api(token, serverUrl);
     this.parser = new srtParser2();
     this.videoEl;
@@ -79,8 +83,8 @@ const start = async () => {
     });
 
     if (vidContainer) {
-      console.log('subseek START!', vidEl);
       seek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
+      seek.getSession();
       seek.getSubtitles();
     }
   });
