@@ -1,7 +1,18 @@
-import Api from './Api';
+import React from 'react';
 import srtParser2 from 'srt-parser-2';
+import { createRoot } from 'react-dom/client';
+
+import Api from './Api';
 import { getUrl, wait } from './modules/helpers';
 import { VIDEO_PLAYER_SELECTOR } from './constants';
+
+import ContentApp from './components/ContentApp';
+
+import './content.styles.css';
+
+const container = document.createElement('div');
+container.id = 'content-container';
+document.body.appendChild(container);
 
 class SubSeek {
   constructor(token, serverUrl) {
@@ -35,37 +46,23 @@ class SubSeek {
       await this.api.putSubFile(subStream, mediaId);
       await wait(3);
       console.log('subseek REFETCH!');
-      this.getSubtitles(); // call function again to load the subtitles
-      return;
-    }
-
-    if (subStream) {
+      return this.getSubtitles(); // call function again to load the subtitles
+    } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
-      this.subtitles = this.parseSubtitles(subtitleText);
-    }
-  }
-
-  async parseSubtitles(subtitleText) {
-    const parsed = this.parser.fromSrt(subtitleText);
-
-    if (!this.videoEl) {
-      this.videoEl = this.getVideoElement();
-    }
-    await wait(5);
-    if (this.videoEl) {
-      console.log(parsed[100], 'subseek NEW TIME TEMPORARY');
-      this.videoEl.currentTime = parsed[100].startSeconds;
+      return this.parser.fromSrt(subtitleText);
     }
   }
 
   async getSession() {
     const resp = await this.api.getSession();
     console.log(resp, 'subseek session');
+    return resp;
   }
 
   async getSections() {
     const resp = await this.api.getSections();
     console.log(resp, 'subseek sections');
+    return resp;
   }
 }
 
@@ -82,10 +79,11 @@ const start = async () => {
       return el.querySelector(VIDEO_PLAYER_SELECTOR);
     });
 
-    if (vidContainer) {
+    if (vidContainer && !seek.videoEl) {
       seek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
-      seek.getSession();
-      seek.getSubtitles();
+
+      const root = createRoot(container);
+      root.render(<ContentApp subseek={seek} />);
     }
   });
   mutationObserver.observe(document.getElementById('plex'), {
