@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
 
-const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
+const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [isClosed, setIsClosed] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
-  const [searchValue, setSearchValue] = useState('');
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
 
   useEffect(() => {
@@ -62,6 +62,7 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
     subseek.videoEl.currentTime = time;
     subseek.videoEl.play();
     // @ts-ignore
+    // auto expand
     // document.querySelector('button[aria-label="Expand Player"]').click();
     setSelectedSub(sub);
     sub?.ref?.current.scrollIntoView({
@@ -104,4 +105,4 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   );
 };
 
-export default ContentApp;
+export default SubtitleSearch;

@@ -1,5 +1,9 @@
 import { PLEX_TV_URL } from '../constants';
 
+export const formatTimestamp = (timestamp) => {
+  return /^\d{1,2}:\d{1,2}:\d{1,2}/i.exec(timestamp);
+};
+
 export const wait = (num) => {
   return new Promise((resolve) => {
     setTimeout(() => {

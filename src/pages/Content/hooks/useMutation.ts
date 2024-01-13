@@ -1,22 +1,10 @@
-import React, { useEffect, useState } from 'react';
-
-import { getUrl } from '../modules/helpers';
-import SubSeek from '../modules/SubSeek';
-import { TAuth, TSubseek } from './types';
+import { useEffect, useState } from 'react';
 import { VIDEO_PLAYER_SELECTOR } from '../constants';
-import ContentApp from './ContentApp';
+import SubSeek from '../modules/SubSeek';
+import { TAuth, TSubseek } from '../components/types';
 
-const App = () => {
-  const [auth, setAuth] = useState<TAuth>();
+export const useMutation = (auth?: TAuth) => {
   const [seek, setSeek] = useState<TSubseek>();
-
-  useEffect(() => {
-    const fetchAuth = async () => {
-      const { token, serverUrl } = await getUrl();
-      setAuth({ token, serverUrl });
-    };
-    fetchAuth();
-  }, []);
 
   useEffect(() => {
     if (!auth || !!seek) {
@@ -46,7 +34,5 @@ const App = () => {
     });
   }, [auth]);
 
-  return seek?.videoEl ? <ContentApp subseek={seek} /> : null;
+  return { seek };
 };
-
-export default App;

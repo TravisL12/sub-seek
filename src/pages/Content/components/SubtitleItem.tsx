@@ -1,9 +1,6 @@
 import React from 'react';
+import { formatTimestamp } from '../modules/helpers';
 import { TSubtitle } from './types';
-
-const formatTimestamp = (timestamp: string) => {
-  return /^\d{1,2}:\d{1,2}:\d{1,2}/i.exec(timestamp);
-};
 
 const SubtitleItem = ({
   subtitle,
