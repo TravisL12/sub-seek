@@ -13,6 +13,7 @@ import './content.styles.css';
 const container = document.createElement('div');
 container.id = 'content-container';
 document.body.appendChild(container);
+const root = createRoot(container);
 
 class SubSeek {
   constructor(token, serverUrl) {
@@ -81,10 +82,8 @@ const start = async () => {
 
     if (vidContainer && !seek.videoEl) {
       seek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
-
-      const root = createRoot(container);
-      root.render(<ContentApp subseek={seek} />);
     }
+    root.render(<ContentApp subseek={seek} />);
   });
   mutationObserver.observe(document.getElementById('plex'), {
     subtree: true,
