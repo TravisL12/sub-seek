@@ -11,7 +11,7 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
       selectedSub.ref.current.scrollIntoView({
-        behavior: 'smooth',
+        behavior: 'instant',
         block: 'center',
       });
       setTimeout(() => {
@@ -49,6 +49,9 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
 
   const seekTo = (time: number, sub: TSubtitle) => {
     subseek.videoEl.currentTime = time;
+    subseek.videoEl.play();
+    // @ts-ignore
+    // document.querySelector('button[aria-label="Expand Player"]').click();
     setSelectedSub(sub);
     sub?.ref?.current.scrollIntoView({
       behavior: 'smooth',
