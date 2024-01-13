@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
 
@@ -48,6 +49,10 @@ const ContentApp = ({ subseek }: { subseek: TSubseek }) => {
   };
 
   const seekTo = (time: number, sub: TSubtitle) => {
+    if (!subseek?.videoEl) {
+      return;
+    }
+
     subseek.videoEl.currentTime = time;
     subseek.videoEl.play();
     // @ts-ignore
