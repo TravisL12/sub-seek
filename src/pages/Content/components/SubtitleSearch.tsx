@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useEventSource } from '../hooks/useEventSource';
+import { useToggleSidebar } from '../hooks/useToggleSidebar';
 
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
 
 const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
-  const [isClosed, setIsClosed] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
@@ -24,7 +24,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       return;
     }
 
-    const getSubs = async () => {
+    const getSubtitles = async () => {
       const subs = await subseek.getSubtitles(playing.ratingKey);
       const subsWithRef = subs.map((sub) => ({
         ...sub,
@@ -33,14 +33,24 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       setSubtitles(subsWithRef);
       setFiltersubs(subsWithRef);
     };
-    getSubs();
+    getSubtitles();
   }, [playing?.ratingKey]);
 
   useEffect(() => {
-    if (playing?.state === 'paused') {
-      closeSeekPanel();
+    if (playing?.state === 'paused' || !subseek.videoEl) {
+      closeSubSeek();
     }
-  }, [playing?.state]);
+  }, [playing?.state, subseek?.videoEl]);
+
+  const { openSubSeek, closeSubSeek, isClosed } = useToggleSidebar({
+    setSelectedSub,
+  });
+
+  useEffect(() => {
+    if (!isClosed) {
+      selectSubAtCurrentTime();
+    }
+  }, [isClosed]);
 
   const playingEvent = (event: any) => {
     try {
@@ -98,16 +108,6 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     }
   };
 
-  const openSeekPanel = () => {
-    selectSubAtCurrentTime();
-    setIsClosed(false);
-  };
-
-  const closeSeekPanel = () => {
-    setSelectedSub(undefined);
-    setIsClosed(true);
-  };
-
   const seekTo = (time: number, sub: TSubtitle) => {
     if (!subseek?.videoEl) {
       return;
@@ -123,8 +123,12 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     <div className={`Content-App ${isClosed ? 'sub-seek-closed' : ''}`}>
       <div className="media-title">
         <div className="title">
-          <h1 onClick={openSeekPanel}>SubSeek</h1>
-          <button onClick={closeSeekPanel}>Close</button>
+          <h1>SubSeek</h1>
+
+          <div className="title--buttons">
+            <button onClick={openSubSeek}>Go to Current</button>
+            <button onClick={closeSubSeek}>Close</button>
+          </div>
         </div>
         <div className="clear-btn">
           <input
@@ -133,9 +137,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
             value={searchValue}
             onChange={filterSubtitles}
           />
-          <button disabled={!searchValue} onClick={resetSearch}>
-            Clear
-          </button>
+          {!!searchValue && <button onClick={resetSearch}>Clear</button>}
         </div>
       </div>
       <div className="subtitle-container">

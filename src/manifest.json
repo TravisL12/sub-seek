@@ -6,7 +6,7 @@
   "background": { "service_worker": "background.bundle.js" },
   "permissions": ["scripting"],
   "action": {
-    "default_popup": "popup.html",
+    "default_title": "Open SubSeek",
     "default_icon": "icon-34.png"
   },
   "icons": {

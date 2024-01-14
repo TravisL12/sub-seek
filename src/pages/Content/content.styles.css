@@ -18,7 +18,7 @@ h3 {
   transition: 0.4s ease-in-out transform;
 
   &.sub-seek-closed {
-    transform: translate3d(90%, 0, 0);
+    transform: translate3d(100%, 0, 0);
   }
 
   button {
@@ -40,6 +40,11 @@ h3 {
     .title {
       display: flex;
       justify-content: space-between;
+
+      .title--buttons {
+        display: flex;
+        gap: 20px;
+      }
     }
 
     .clear-btn {
