@@ -17,6 +17,14 @@ h3 {
   z-index: 2000; /* Plex navbar is z-index 1000 */
   transition: 0.4s ease-in-out transform;
 
+  .flex {
+    display: flex;
+
+    &.between {
+      justify-content: space-between;
+    }
+  }
+
   &.sub-seek-closed {
     transform: translate3d(100%, 0, 0);
   }
@@ -62,8 +70,8 @@ h3 {
       border-bottom: 1px solid black;
       transition: 1.5s linear box-shadow;
 
-      /* .subtitle-item--text {} */
       .subtitle-item--timestamp {
+        display: inline-block;
         font-weight: bold;
       }
 

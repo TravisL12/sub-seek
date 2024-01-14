@@ -16,17 +16,19 @@ const SubtitleItem = ({
       ref={subtitle.ref}
       className={`subtitle-item ${isSelected ? 'selected' : ''}`}
     >
-      <p className="subtitle-item--timestamp">
-        {formatTimestamp(subtitle.startTime)}
-      </p>
+      <div className="flex between">
+        <p className="subtitle-item--timestamp">
+          {formatTimestamp(subtitle.startTime)}
+        </p>
+        <button
+          onClick={() => {
+            seekTo(subtitle.startSeconds);
+          }}
+        >
+          Seek to scene
+        </button>
+      </div>
       <p className="subtitle-item--text">{subtitle.text}</p>
-      <button
-        onClick={() => {
-          seekTo(subtitle.startSeconds);
-        }}
-      >
-        Seek to scene
-      </button>
     </div>
   );
 };

@@ -23,6 +23,26 @@ class Api {
     return resp;
   }
 
+  async resetSubFile(partKey) {
+    const url = this.buildRequest(`${ENDPOINTS.parts}/${partKey}`);
+    const resp = await fetchData({
+      url: url + '&subtitleStreamID=0',
+      isJson: false,
+      httpMethod: 'PUT',
+    });
+    return resp;
+  }
+
+  async restoreSubFile(partKey, streamId) {
+    const url = this.buildRequest(`${ENDPOINTS.parts}/${partKey}`);
+    const resp = await fetchData({
+      url: url + `&subtitleStreamID=${streamId}&allParts=1`,
+      isJson: false,
+      httpMethod: 'PUT',
+    });
+    return resp;
+  }
+
   async putSubFile(subtitle, id) {
     const { key, codec, languageCode: language, providerTitle } = subtitle;
     const extra = `&key=${key}&hearingImpaired=0&forced=0&language=${language}&providerTitle=${providerTitle}&codec=${codec}`;

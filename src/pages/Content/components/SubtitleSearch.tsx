@@ -59,7 +59,6 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
         playing.clientIdentifier === subseek.auth.clientIdentifier;
 
       if (isClient) {
-        console.log(`subseek playing event:`, JSON.parse(event.data));
         setPlaying(playing);
       }
     } catch (err) {

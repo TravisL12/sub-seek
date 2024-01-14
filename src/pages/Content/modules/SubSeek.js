@@ -21,9 +21,33 @@ class SubSeek {
     return this.api.beginEventSource();
   }
 
-  async getSubtitles(keyId) {
-    const media = await this.api.getMetadata(keyId); // this doesn't work everywhere. Use the API!
-    const streams = media.Media[0].Part[0].Stream;
+  async resetOrRestoreSubtitles(part, prevSelectedSub) {
+    if (part.id && !prevSelectedSub) {
+      await this.api.resetSubFile(part.id);
+    }
+
+    // if a sub file was selected initially, reselect it
+    if (prevSelectedSub?.id) {
+      this.api.restoreSubFile(part.id, prevSelectedSub.id);
+    }
+  }
+
+  async getSubtitles(keyId, prevSub) {
+    const media = await this.getMetadata(keyId);
+    const part = media.Media[0].Part[0];
+    const streams = part.Stream;
+
+    const prevSelectedSub =
+      prevSub === 'none'
+        ? undefined
+        : prevSub ||
+          streams.find((stream) => {
+            return (
+              (stream.format === 'srt' || stream.codec === 'srt') &&
+              stream.selected
+            );
+          });
+
     let subStream = streams.find((stream) => {
       return (
         (stream.format === 'srt' || stream.codec === 'srt') && !!stream.key
@@ -34,11 +58,12 @@ class SubSeek {
       const results = await this.api.searchSubFiles(keyId);
       subStream = results.MediaContainer.Stream[0];
       await this.api.putSubFile(subStream, keyId);
-      await wait(3);
+      await wait(1);
       console.log('subseek REFETCH!');
-      return this.getSubtitles(keyId); // call function again to load the subtitles
+      return this.getSubtitles(keyId, prevSelectedSub ?? 'none'); // call function again to load the subtitles
     } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
+      this.resetOrRestoreSubtitles(part, prevSelectedSub);
       console.log('subseek SUBTITLES LOADED!', subStream);
       return this.parser.fromSrt(subtitleText);
     }
