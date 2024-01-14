@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import SubSeek from '../modules/SubSeek';
 import { TAuth, TSubseek } from '../components/types';
@@ -11,8 +11,9 @@ export const useMutation = (auth?: TAuth) => {
       return;
     }
 
+    const subseek: TSubseek = new SubSeek(auth);
+
     const mutationObserver = new MutationObserver((mutationList) => {
-      const subseek: TSubseek = new SubSeek(auth.token, auth.serverUrl);
       const all: any[] = mutationList
         .map((listItem) => Array.from(listItem.addedNodes))
         .flat();
@@ -21,7 +22,12 @@ export const useMutation = (auth?: TAuth) => {
         return el?.querySelector && el.querySelector(VIDEO_PLAYER_SELECTOR);
       });
 
-      if (vidContainer && subseek && !subseek.videoEl) {
+      if (vidContainer) {
+        console.log(
+          'subseek ADD VIDEO mutationList/all size:',
+          mutationList.length,
+          all.length
+        );
         subseek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
         setSeek(subseek);
       }

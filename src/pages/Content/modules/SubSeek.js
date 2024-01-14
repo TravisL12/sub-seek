@@ -5,12 +5,9 @@ import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import Api from '../Api';
 
 class SubSeek {
-  constructor(token, serverUrl) {
-    console.log('subseek -------');
-    console.log('subseek token', token);
-    console.log('subseek serverUrl', serverUrl);
-    console.log('subseek -------');
-    this.api = new Api(token, serverUrl);
+  constructor(auth) {
+    console.table('---- subseek AUTH ----', auth);
+    this.api = new Api(auth);
     this.parser = new srtParser2();
     this.videoEl;
   }
@@ -19,9 +16,11 @@ class SubSeek {
     return document.querySelector(VIDEO_PLAYER_SELECTOR);
   }
 
+  getEvents() {
+    return this.api.beginEventSource();
+  }
+
   async getSubtitles() {
-    // NEED BETTER WAY TO GET MEDIA ID
-    // this.api.beginEventSource();
     const { mediaId, media } = await this.api.currentlyWatching(); // this doesn't work everywhere. Use the API!
     const streams = media.Media[0].Part[0].Stream;
     let subStream = streams.find((stream) => {
@@ -43,8 +42,8 @@ class SubSeek {
     }
   }
 
-  async getSession() {
-    const resp = await this.api.getSession();
+  async getSessions() {
+    const resp = await this.api.getSessions();
     console.log(resp, 'subseek session');
     return resp;
   }

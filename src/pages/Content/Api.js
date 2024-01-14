@@ -2,9 +2,11 @@ import { ENDPOINTS } from './constants';
 import { fetchData } from './modules/helpers';
 
 class Api {
-  constructor(token, serverUrl) {
+  constructor(auth) {
+    const { token, serverUrl, clientIdentifier } = auth;
     this.token = token;
     this.serverUrl = serverUrl;
+    this.clientIdentifier = clientIdentifier;
   }
 
   buildRequest(endpoint, filters) {
@@ -44,13 +46,6 @@ class Api {
     const filters = 'activity,playing';
     const url = this.buildRequest(ENDPOINTS.eventSource, filters);
     const eventSource = new EventSource(url);
-
-    ['activity', 'ping', 'playing'].forEach((item) => {
-      eventSource.addEventListener(item, (event) => {
-        console.log(`subseek ${item} event:`, JSON.parse(event.data));
-      });
-    });
-
     return eventSource;
   }
 
@@ -66,7 +61,7 @@ class Api {
     }
   }
 
-  async getSession() {
+  async getSessions() {
     const url = this.buildRequest(ENDPOINTS.session);
     const resp = await fetchData({ url });
     return resp;

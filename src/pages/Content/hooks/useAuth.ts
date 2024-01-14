@@ -7,8 +7,8 @@ export const useAuth = () => {
 
   useEffect(() => {
     const fetchAuth = async () => {
-      const { token, serverUrl } = await getUrl();
-      setAuth({ token, serverUrl });
+      const { token, serverUrl, clientIdentifier } = await getUrl();
+      setAuth({ token, serverUrl, clientIdentifier });
     };
     fetchAuth();
   }, []);

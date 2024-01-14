@@ -70,11 +70,12 @@ export const getUrl = async () => {
   // same token. Setup logic to choose the remote session
   // assuming that that session is most likely to work
   const output = devices.map(({ Device }) => {
+    const clientIdentifier = Device.clientIdentifier;
     const token = Device.accessToken;
     return Device.children
       ? Device.children.map((child) => {
           const serverUrl = child.Connection?.uri;
-          return serverUrl ? { token, serverUrl } : null;
+          return serverUrl ? { token, serverUrl, clientIdentifier } : null;
         })
       : null;
   });

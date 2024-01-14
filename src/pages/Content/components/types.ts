@@ -2,6 +2,7 @@ import React from 'react';
 export type TAuth = {
   token: string;
   serverUrl: string;
+  clientIdentifier: string;
 };
 export type TSubtitle = {
   id: string;
@@ -15,5 +16,7 @@ export type TSubtitle = {
 
 export type TSubseek = {
   getSubtitles: () => Promise<TSubtitle[]>;
+  getSessions: () => void;
+  getEvents: () => EventSource;
   videoEl?: HTMLVideoElement;
 };

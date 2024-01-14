@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useEventSource } from '../hooks/useEventSource';
 
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
@@ -9,6 +10,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
+
+  useEventSource(subseek);
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
