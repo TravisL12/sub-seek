@@ -5,7 +5,7 @@ import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
 
 const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
-  const [isClosed, setIsClosed] = useState(false);
+  const [isClosed, setIsClosed] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
@@ -39,10 +39,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
-      selectedSub.ref.current.scrollIntoView({
-        behavior: 'instant',
-        block: 'center',
-      });
+      scrollToSub(selectedSub, 'instant');
       setSelectedSub(undefined);
     }
   }, [searchValue]);
@@ -74,10 +71,36 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     setFiltersubs(subtitles);
   };
 
+  const scrollToSub = (subtitle: TSubtitle, behavior: string = 'smooth') => {
+    subtitle.ref?.current.scrollIntoView({
+      behavior,
+      block: 'center',
+    });
+  };
+
+  const selectSubAtCurrentTime = () => {
+    if (!subseek.videoEl) {
+      return;
+    }
+
+    const currentTime = subseek.videoEl.currentTime;
+    const nearestSub = filterSubs?.find((sub) => {
+      return sub.startSeconds > currentTime;
+    });
+
+    if (nearestSub) {
+      scrollToSub(nearestSub);
+      setSelectedSub(nearestSub);
+    }
+  };
+
   const openSeekPanel = () => {
+    selectSubAtCurrentTime();
     setIsClosed(false);
   };
+
   const closeSeekPanel = () => {
+    setSelectedSub(undefined);
     setIsClosed(true);
   };
 
@@ -92,10 +115,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     // auto expand
     // document.querySelector('button[aria-label="Expand Player"]').click();
     setSelectedSub(sub);
-    sub?.ref?.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
+    scrollToSub(sub);
   };
 
   return (
