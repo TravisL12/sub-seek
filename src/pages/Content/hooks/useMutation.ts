@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import SubSeek from '../modules/SubSeek';
 import { TAuth, TSubseek } from '../components/types';
@@ -23,11 +23,6 @@ export const useMutation = (auth?: TAuth) => {
       });
 
       if (vidContainer) {
-        console.log(
-          'subseek ADD VIDEO mutationList/all size:',
-          mutationList.length,
-          all.length
-        );
         subseek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
         setSeek(subseek);
       }

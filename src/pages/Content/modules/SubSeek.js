@@ -39,6 +39,7 @@ class SubSeek {
       return this.getSubtitles(keyId); // call function again to load the subtitles
     } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
+      console.log('subseek SUBTITLES LOADED!', subStream);
       return this.parser.fromSrt(subtitleText);
     }
   }

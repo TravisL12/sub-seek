@@ -20,12 +20,12 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   }, [searchValue]);
 
   useEffect(() => {
-    if (!playing?.key) {
+    if (!playing?.ratingKey) {
       return;
     }
 
     const getSubs = async () => {
-      const subs = await subseek.getSubtitles(playing.key);
+      const subs = await subseek.getSubtitles(playing.ratingKey);
       const subsWithRef = subs.map((sub) => ({
         ...sub,
         ref: React.createRef(),
@@ -34,7 +34,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       setFiltersubs(subsWithRef);
     };
     getSubs();
-  }, [playing?.key]);
+  }, [playing?.ratingKey]);
 
   useEffect(() => {
     if (playing?.state === 'paused') {
