@@ -91,18 +91,6 @@ class Api {
     const resp = await fetchData({ url });
     return resp;
   }
-
-  async getSections() {
-    const url = this.buildRequest(ENDPOINTS.sections);
-    const resp = await fetchData({ url });
-    return resp;
-  }
-
-  async getDevices() {
-    const url = this.buildRequest(ENDPOINTS.devices);
-    const resp = await fetchData({ url });
-    return resp;
-  }
 }
 
 export default Api;

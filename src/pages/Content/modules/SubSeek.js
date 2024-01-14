@@ -13,10 +13,6 @@ class SubSeek {
     this.videoEl;
   }
 
-  getVideoElement() {
-    return document.querySelector(VIDEO_PLAYER_SELECTOR);
-  }
-
   getEvents() {
     return this.api.beginEventSource();
   }
@@ -78,12 +74,6 @@ class SubSeek {
   async getSessions() {
     const resp = await this.api.getSessions();
     console.log(resp, 'subseek session');
-    return resp;
-  }
-
-  async getSections() {
-    const resp = await this.api.getSections();
-    console.log(resp, 'subseek sections');
     return resp;
   }
 }
