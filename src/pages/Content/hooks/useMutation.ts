@@ -13,12 +13,12 @@ export const useMutation = (auth?: TAuth) => {
 
     const subseek: TSubseek = new SubSeek(auth);
 
-    const mutationObserver = new MutationObserver((mutationList) => {
-      const all: any[] = mutationList
-        .map((listItem) => Array.from(listItem.addedNodes))
+    const addVideoElement = (mutationList: any) => {
+      const allAdded: any[] = mutationList
+        .map((listItem: any) => Array.from(listItem.addedNodes))
         .flat();
 
-      const vidContainer = all.find((el) => {
+      const vidContainer = allAdded.find((el) => {
         return el?.querySelector && el.querySelector(VIDEO_PLAYER_SELECTOR);
       });
 
@@ -26,6 +26,26 @@ export const useMutation = (auth?: TAuth) => {
         subseek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
         setSeek(subseek);
       }
+    };
+
+    const removeVideoElement = (mutationList: any) => {
+      const allRemoved: any[] = mutationList
+        .map((listItem: any) => Array.from(listItem.removedNodes))
+        .flat();
+
+      const vidContainer = allRemoved.find((el) => {
+        return el?.tagName && el.tagName === 'VIDEO';
+      });
+
+      if (vidContainer) {
+        subseek.videoEl = undefined;
+        setSeek(subseek);
+      }
+    };
+
+    const mutationObserver = new MutationObserver((mutationList) => {
+      addVideoElement(mutationList);
+      removeVideoElement(mutationList);
     });
 
     // @ts-ignore

@@ -38,7 +38,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
 
   useEffect(() => {
     if (playing?.state === 'paused') {
-      setIsClosed(true);
+      closeSeekPanel();
     }
   }, [playing?.state]);
 
@@ -115,14 +115,11 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
 
     subseek.videoEl.currentTime = time;
     subseek.videoEl.play();
-    // @ts-ignore
-    // auto expand
-    // document.querySelector('button[aria-label="Expand Player"]').click();
     setSelectedSub(sub);
     scrollToSub(sub);
   };
 
-  return (
+  const render = () => (
     <div className={`Content-App ${isClosed ? 'sub-seek-closed' : ''}`}>
       <div className="media-title">
         <div className="title">
@@ -154,6 +151,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       </div>
     </div>
   );
+
+  return subseek?.videoEl ? render() : null;
 };
 
 export default SubtitleSearch;

@@ -15,7 +15,7 @@ const root = createRoot(container);
 const App = () => {
   const { auth } = useAuth();
   const { seek } = useMutation(auth);
-  return seek?.videoEl ? <SubtitleSearch subseek={seek} /> : null;
+  return !!seek ? <SubtitleSearch subseek={seek} /> : null;
 };
 
 root.render(<App />);
