@@ -21,8 +21,8 @@ class SubSeek {
     return this.api.beginEventSource();
   }
 
-  async getSubtitles() {
-    const { mediaId, media } = await this.api.currentlyWatching(); // this doesn't work everywhere. Use the API!
+  async getSubtitles(keyId) {
+    const media = await this.api.getMetadata(keyId); // this doesn't work everywhere. Use the API!
     const streams = media.Media[0].Part[0].Stream;
     let subStream = streams.find((stream) => {
       return (
@@ -31,16 +31,22 @@ class SubSeek {
     });
 
     if (!subStream) {
-      const results = await this.api.searchSubFiles(mediaId);
+      const results = await this.api.searchSubFiles(keyId);
       subStream = results.MediaContainer.Stream[0];
-      await this.api.putSubFile(subStream, mediaId);
+      await this.api.putSubFile(subStream, keyId);
       await wait(3);
       console.log('subseek REFETCH!');
-      return this.getSubtitles(); // call function again to load the subtitles
+      return this.getSubtitles(keyId); // call function again to load the subtitles
     } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
       return this.parser.fromSrt(subtitleText);
     }
+  }
+
+  async getMetadata(keyId) {
+    const resp = await this.api.getMetadata(keyId);
+    console.log(resp, 'subseek metadata');
+    return resp;
   }
 
   async getSessions() {

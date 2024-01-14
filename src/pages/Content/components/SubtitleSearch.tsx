@@ -10,32 +10,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
-
-  const activityEvent = (event: any) => {
-    console.log(`subseek activity event:`, JSON.parse(event.data));
-  };
-
-  const playingEvent = (event: any) => {
-    try {
-      const playing = JSON.parse(event.data)?.PlaySessionStateNotification;
-      const isClient =
-        playing.clientIdentifier === subseek.auth.clientIdentifier;
-
-      if (isClient) {
-        console.log(`subseek playing event:`, JSON.parse(event.data));
-        if (playing.state === 'paused') {
-          setIsClosed(true);
-        }
-      }
-    } catch (err) {
-      console.log('subseek play event error', err);
-    }
-  };
-
-  useEventSource(subseek, {
-    activity: activityEvent,
-    playing: playingEvent,
-  });
+  const [playing, setPlaying] = useState<any>();
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
@@ -45,8 +20,12 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   }, [searchValue]);
 
   useEffect(() => {
+    if (!playing?.key) {
+      return;
+    }
+
     const getSubs = async () => {
-      const subs = await subseek.getSubtitles();
+      const subs = await subseek.getSubtitles(playing.key);
       const subsWithRef = subs.map((sub) => ({
         ...sub,
         ref: React.createRef(),
@@ -55,7 +34,32 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       setFiltersubs(subsWithRef);
     };
     getSubs();
-  }, [subseek]);
+  }, [playing?.key]);
+
+  useEffect(() => {
+    if (playing?.state === 'paused') {
+      setIsClosed(true);
+    }
+  }, [playing?.state]);
+
+  const playingEvent = (event: any) => {
+    try {
+      const playing = JSON.parse(event.data)?.PlaySessionStateNotification;
+      const isClient =
+        playing.clientIdentifier === subseek.auth.clientIdentifier;
+
+      if (isClient) {
+        console.log(`subseek playing event:`, JSON.parse(event.data));
+        setPlaying(playing);
+      }
+    } catch (err) {
+      console.log('subseek play event error', err);
+    }
+  };
+
+  useEventSource(subseek, {
+    playing: playingEvent,
+  });
 
   const filterSubtitles = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

@@ -8,7 +8,7 @@ export const useEventSource = (
   useEffect(() => {
     subseek.getSessions();
     const eventSource: EventSource = subseek.getEvents();
-    eventSource.addEventListener('activity', eventCallbacks.activity);
+    // eventSource.addEventListener('activity', eventCallbacks.activity);
     eventSource.addEventListener('playing', eventCallbacks.playing);
   }, [subseek]);
 };

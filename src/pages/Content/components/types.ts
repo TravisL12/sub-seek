@@ -15,9 +15,10 @@ export type TSubtitle = {
 };
 
 export type TSubseek = {
-  getSubtitles: () => Promise<TSubtitle[]>;
+  getSubtitles: (keyId: string) => Promise<TSubtitle[]>;
   getSessions: () => void;
   getEvents: () => EventSource;
+  getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
   auth: TAuth;
 };

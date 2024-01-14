@@ -54,11 +54,16 @@ class Api {
     const query = location.hash.split('?')[1];
     const params = Object.fromEntries(new URLSearchParams(query));
     if (params.key) {
-      const url = this.buildRequest(params.key);
-      const resp = await fetchData({ url });
-      const mediaId = params.key.split('/').slice(-1)[0]; // ugly but works
-      return { mediaId, media: resp.MediaContainer.Metadata[0] };
+      const keyId = params.key.split('/').slice(-1)[0]; // ugly but works
+      const resp = await this.getMetadata(keyId);
+      return { mediaId: keyId, media: resp.MediaContainer.Metadata[0] };
     }
+  }
+
+  async getMetadata(keyId) {
+    const url = this.buildRequest(`${ENDPOINTS.metadata}/${keyId}`);
+    const resp = await fetchData({ url });
+    return resp.MediaContainer.Metadata[0];
   }
 
   async getSessions() {
