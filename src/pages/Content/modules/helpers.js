@@ -1,5 +1,9 @@
 import { PLEX_TV_URL } from '../constants';
 
+export const formatTimestamp = (timestamp) => {
+  return /^\d{1,2}:\d{1,2}:\d{1,2}/i.exec(timestamp);
+};
+
 export const wait = (num) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -53,14 +57,14 @@ export const fetchData = async ({ url, isJson = true, httpMethod = 'GET' }) => {
   return await (await fetch(url, { method: httpMethod })).text();
 };
 
-export const getUrl = async () => {
+export const getDevice = async () => {
   const plexToken = localStorage['myPlexAccessToken'];
+  const clientIdentifier = localStorage['clientID'];
   const url = `${PLEX_TV_URL}&X-Plex-Token=${plexToken}`;
   const result = await fetch(url); // calling to PLEX_TV_URL doesn't accept JSON
   const text = await result.text();
-  const {
-    MediaContainer: { children: devices },
-  } = parseXml(text);
+  const plexTv = parseXml(text);
+  const devices = plexTv.MediaContainer.children;
 
   // devices for local and remote sessions can share have the
   // same token. Setup logic to choose the remote session
@@ -70,7 +74,7 @@ export const getUrl = async () => {
     return Device.children
       ? Device.children.map((child) => {
           const serverUrl = child.Connection?.uri;
-          return serverUrl ? { token, serverUrl } : null;
+          return serverUrl ? { token, serverUrl, clientIdentifier } : null;
         })
       : null;
   });

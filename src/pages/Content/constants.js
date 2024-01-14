@@ -3,6 +3,7 @@ export const ENDPOINTS = {
   metadata: '/library/metadata',
   sections: '/library/sections',
   streams: '/library/stream',
+  devices: '/devices',
   eventSource: '/:/eventsource/notifications',
 };
 

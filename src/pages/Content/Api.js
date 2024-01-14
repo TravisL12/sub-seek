@@ -2,9 +2,11 @@ import { ENDPOINTS } from './constants';
 import { fetchData } from './modules/helpers';
 
 class Api {
-  constructor(token, serverUrl) {
+  constructor(auth) {
+    const { token, serverUrl, clientIdentifier } = auth;
     this.token = token;
     this.serverUrl = serverUrl;
+    this.clientIdentifier = clientIdentifier;
   }
 
   buildRequest(endpoint, filters) {
@@ -44,13 +46,6 @@ class Api {
     const filters = 'activity,playing';
     const url = this.buildRequest(ENDPOINTS.eventSource, filters);
     const eventSource = new EventSource(url);
-
-    ['activity', 'ping', 'playing'].forEach((item) => {
-      eventSource.addEventListener(item, (event) => {
-        console.log(`subseek ${item} event:`, JSON.parse(event.data));
-      });
-    });
-
     return eventSource;
   }
 
@@ -59,14 +54,19 @@ class Api {
     const query = location.hash.split('?')[1];
     const params = Object.fromEntries(new URLSearchParams(query));
     if (params.key) {
-      const url = this.buildRequest(params.key);
-      const resp = await fetchData({ url });
-      const mediaId = params.key.split('/').slice(-1)[0]; // ugly but works
-      return { mediaId, media: resp.MediaContainer.Metadata[0] };
+      const keyId = params.key.split('/').slice(-1)[0]; // ugly but works
+      const resp = await this.getMetadata(keyId);
+      return { mediaId: keyId, media: resp.MediaContainer.Metadata[0] };
     }
   }
 
-  async getSession() {
+  async getMetadata(keyId) {
+    const url = this.buildRequest(`${ENDPOINTS.metadata}/${keyId}`);
+    const resp = await fetchData({ url });
+    return resp.MediaContainer.Metadata[0];
+  }
+
+  async getSessions() {
     const url = this.buildRequest(ENDPOINTS.session);
     const resp = await fetchData({ url });
     return resp;
@@ -74,6 +74,12 @@ class Api {
 
   async getSections() {
     const url = this.buildRequest(ENDPOINTS.sections);
+    const resp = await fetchData({ url });
+    return resp;
+  }
+
+  async getDevices() {
+    const url = this.buildRequest(ENDPOINTS.devices);
     const resp = await fetchData({ url });
     return resp;
   }
