@@ -125,7 +125,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
           <h1>SubSeek</h1>
 
           <div className="title--buttons">
-            <button onClick={openSubSeek}>Go to Current</button>
+            <button onClick={selectSubAtCurrentTime}>Go to Current</button>
             <button onClick={closeSubSeek}>Close</button>
           </div>
         </div>
