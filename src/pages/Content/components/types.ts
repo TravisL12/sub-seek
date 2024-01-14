@@ -19,4 +19,5 @@ export type TSubseek = {
   getSessions: () => void;
   getEvents: () => EventSource;
   videoEl?: HTMLVideoElement;
+  auth: TAuth;
 };

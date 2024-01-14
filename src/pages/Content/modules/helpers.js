@@ -57,20 +57,19 @@ export const fetchData = async ({ url, isJson = true, httpMethod = 'GET' }) => {
   return await (await fetch(url, { method: httpMethod })).text();
 };
 
-export const getUrl = async () => {
+export const getDevice = async () => {
   const plexToken = localStorage['myPlexAccessToken'];
+  const clientIdentifier = localStorage['clientID'];
   const url = `${PLEX_TV_URL}&X-Plex-Token=${plexToken}`;
   const result = await fetch(url); // calling to PLEX_TV_URL doesn't accept JSON
   const text = await result.text();
-  const {
-    MediaContainer: { children: devices },
-  } = parseXml(text);
+  const plexTv = parseXml(text);
+  const devices = plexTv.MediaContainer.children;
 
   // devices for local and remote sessions can share have the
   // same token. Setup logic to choose the remote session
   // assuming that that session is most likely to work
   const output = devices.map(({ Device }) => {
-    const clientIdentifier = Device.clientIdentifier;
     const token = Device.accessToken;
     return Device.children
       ? Device.children.map((child) => {

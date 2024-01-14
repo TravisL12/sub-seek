@@ -8,6 +8,7 @@ class SubSeek {
   constructor(auth) {
     console.table('---- subseek AUTH ----', auth);
     this.api = new Api(auth);
+    this.auth = auth;
     this.parser = new srtParser2();
     this.videoEl;
   }

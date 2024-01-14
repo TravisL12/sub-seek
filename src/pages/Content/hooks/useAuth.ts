@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUrl } from '../modules/helpers';
+import { getDevice } from '../modules/helpers';
 import { TAuth } from '../components/types';
 
 export const useAuth = () => {
@@ -7,7 +7,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     const fetchAuth = async () => {
-      const { token, serverUrl, clientIdentifier } = await getUrl();
+      const { token, serverUrl, clientIdentifier } = await getDevice();
       setAuth({ token, serverUrl, clientIdentifier });
     };
     fetchAuth();

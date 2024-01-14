@@ -11,7 +11,31 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
 
-  useEventSource(subseek);
+  const activityEvent = (event: any) => {
+    console.log(`subseek activity event:`, JSON.parse(event.data));
+  };
+
+  const playingEvent = (event: any) => {
+    try {
+      const playing = JSON.parse(event.data)?.PlaySessionStateNotification;
+      const isClient =
+        playing.clientIdentifier === subseek.auth.clientIdentifier;
+
+      if (isClient) {
+        console.log(`subseek playing event:`, JSON.parse(event.data));
+        if (playing.state === 'paused') {
+          setIsClosed(true);
+        }
+      }
+    } catch (err) {
+      console.log('subseek play event error', err);
+    }
+  };
+
+  useEventSource(subseek, {
+    activity: activityEvent,
+    playing: playingEvent,
+  });
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
