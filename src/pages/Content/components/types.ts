@@ -30,3 +30,5 @@ export type TSubseek = {
   subtitleResultIdx: number;
   subtitleResults?: { [key: string]: any[] };
 };
+
+export type TAppOptions = {};
