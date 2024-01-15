@@ -1,7 +1,6 @@
 import srtParser2 from 'srt-parser-2';
 
 import { wait } from './helpers';
-import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import Api from '../Api';
 
 class SubSeek {
@@ -11,6 +10,8 @@ class SubSeek {
     this.auth = auth;
     this.parser = new srtParser2();
     this.videoEl;
+    this.subtitleResults;
+    this.subtitleResultIdx = 0;
   }
 
   getEvents() {
@@ -37,22 +38,20 @@ class SubSeek {
       prevSub === 'none'
         ? undefined
         : prevSub ||
-          streams.find((stream) => {
-            return (
-              (stream.format === 'srt' || stream.codec === 'srt') &&
-              stream.selected
-            );
+          streams.find(({ format, codec, selected }) => {
+            return (format === 'srt' || codec === 'srt') && selected;
           });
 
-    let subStream = streams.find((stream) => {
-      return (
-        (stream.format === 'srt' || stream.codec === 'srt') && !!stream.key
-      );
+    let subStream = streams.find(({ format, codec, key }) => {
+      return (format === 'srt' || codec === 'srt') && !!key;
     });
 
     if (!subStream) {
-      const results = await this.api.searchSubFiles(keyId);
-      subStream = results.MediaContainer.Stream[0];
+      const subtitleSearchResults = await this.api.searchSubFiles(keyId);
+      this.subtitleResults = {
+        [keyId]: subtitleSearchResults.MediaContainer.Stream,
+      };
+      subStream = this.subtitleResults[keyId][this.subtitleResultIdx];
       await this.api.putSubFile(subStream, keyId);
       await wait(1);
       console.log('subseek REFETCH!');

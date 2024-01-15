@@ -11,6 +11,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
   const [playing, setPlaying] = useState<any>();
+  const [subtitleResults, setSubtitleResults] =
+    useState<TSubseek['subtitleResults']>();
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
@@ -30,6 +32,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
         ...sub,
         ref: React.createRef(),
       }));
+      setSubtitleResults(subseek.subtitleResults);
       setSubtitles(subsWithRef);
       setFiltersubs(subsWithRef);
     };

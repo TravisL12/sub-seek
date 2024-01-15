@@ -1,9 +1,11 @@
 import React from 'react';
+
 export type TAuth = {
   token: string;
   serverUrl: string;
   clientIdentifier: string;
 };
+
 export type TSubtitle = {
   id: string;
   startTime: string;
@@ -21,4 +23,5 @@ export type TSubseek = {
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
   auth: TAuth;
+  subtitleResults?: { [key: string]: any[] };
 };
