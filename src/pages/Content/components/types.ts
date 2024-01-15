@@ -23,7 +23,6 @@ export type TSubseek = {
     prevSub?: any,
     isNewChoice?: boolean
   ) => Promise<TSubtitle[]>;
-  getSessions: () => void;
   getEvents: () => EventSource;
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
