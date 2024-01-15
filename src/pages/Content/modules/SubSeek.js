@@ -29,7 +29,7 @@ class SubSeek {
     }
   }
 
-  async getSubtitles(keyId, prevSub) {
+  async getSubtitles(keyId, prevSub, isNewChoice = false) {
     const media = await this.getMetadata(keyId);
     const part = media.Media[0].Part[0];
     const streams = part.Stream;
@@ -46,15 +46,15 @@ class SubSeek {
       return (format === 'srt' || codec === 'srt') && !!key;
     });
 
-    if (!subStream) {
-      const subtitleSearchResults = await this.api.searchSubFiles(keyId);
-      this.subtitleResults = {
-        [keyId]: subtitleSearchResults.MediaContainer.Stream,
-      };
+    const subtitleSearchResults = await this.api.searchSubFiles(keyId);
+    this.subtitleResults = {
+      [keyId]: subtitleSearchResults.MediaContainer.Stream,
+    };
+
+    if (!subStream || isNewChoice) {
       subStream = this.subtitleResults[keyId][this.subtitleResultIdx];
       await this.api.putSubFile(subStream, keyId);
       await wait(1);
-      console.log('subseek REFETCH!');
       return this.getSubtitles(keyId, prevSelectedSub ?? 'none'); // call function again to load the subtitles
     } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
