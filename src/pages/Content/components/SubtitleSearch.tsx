@@ -11,6 +11,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
   const [playing, setPlaying] = useState<any>();
+  const [subtitleResults, setSubtitleResults] =
+    useState<TSubseek['subtitleResults']>();
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
@@ -19,20 +21,25 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     }
   }, [searchValue]);
 
+  const getSubtitles = async (isNewChoice?: boolean) => {
+    const subs = await subseek.getSubtitles(
+      playing.ratingKey,
+      undefined,
+      isNewChoice
+    );
+    const subsWithRef = subs.map((sub) => ({
+      ...sub,
+      ref: React.createRef(),
+    }));
+    setSubtitleResults(subseek.subtitleResults);
+    setSubtitles(subsWithRef);
+    setFiltersubs(subsWithRef);
+  };
+
   useEffect(() => {
     if (!playing?.ratingKey) {
       return;
     }
-
-    const getSubtitles = async () => {
-      const subs = await subseek.getSubtitles(playing.ratingKey);
-      const subsWithRef = subs.map((sub) => ({
-        ...sub,
-        ref: React.createRef(),
-      }));
-      setSubtitles(subsWithRef);
-      setFiltersubs(subsWithRef);
-    };
     getSubtitles();
   }, [playing?.ratingKey]);
 
@@ -42,7 +49,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     }
   }, [playing?.state, subseek?.videoEl]);
 
-  const { openSubSeek, closeSubSeek, isClosed } = useToggleSidebar({
+  const { closeSubSeek, isClosed } = useToggleSidebar({
     setSelectedSub,
   });
 
@@ -123,20 +130,40 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
       <div className="media-title">
         <div className="title">
           <h1>SubSeek</h1>
-
           <div className="title--buttons">
             <button onClick={selectSubAtCurrentTime}>Go to Current</button>
             <button onClick={closeSubSeek}>Close</button>
           </div>
         </div>
-        <div className="clear-btn">
-          <input
-            placeholder="Search subtitles"
-            type="text"
-            value={searchValue}
-            onChange={filterSubtitles}
-          />
-          {!!searchValue && <button onClick={resetSearch}>Clear</button>}
+        <div className="flex--between">
+          <div className="search--input">
+            <input
+              placeholder="Search subtitles"
+              type="text"
+              value={searchValue}
+              onChange={filterSubtitles}
+            />
+            {!!searchValue && <button onClick={resetSearch}>Clear</button>}
+          </div>
+          {subtitleResults?.[playing.ratingKey] && (
+            <div>
+              <select
+                value={+subseek.subtitleResultIdx}
+                onChange={(event) => {
+                  subseek.subtitleResultIdx = +event.target.value;
+                  getSubtitles(true);
+                }}
+              >
+                {subtitleResults[playing.ratingKey].map((result, idx) => {
+                  return (
+                    <option value={idx}>
+                      {result.title || result.displayTitle}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
         </div>
       </div>
       <div className="subtitle-container">

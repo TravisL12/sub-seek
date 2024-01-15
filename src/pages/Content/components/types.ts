@@ -1,9 +1,11 @@
 import React from 'react';
+
 export type TAuth = {
   token: string;
   serverUrl: string;
   clientIdentifier: string;
 };
+
 export type TSubtitle = {
   id: string;
   startTime: string;
@@ -15,10 +17,18 @@ export type TSubtitle = {
 };
 
 export type TSubseek = {
-  getSubtitles: (keyId: string) => Promise<TSubtitle[]>;
+  getSubtitles: (
+    keyId: string,
+    prevSub?: any,
+    isNewChoice?: boolean
+  ) => Promise<TSubtitle[]>;
   getSessions: () => void;
   getEvents: () => EventSource;
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
   auth: TAuth;
+  subtitleResultIdx: number;
+  subtitleResults?: { [key: string]: any[] };
 };
+
+export type TAppOptions = {};
