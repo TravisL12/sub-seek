@@ -1,6 +1,12 @@
 # Plex SubSeek
 
-Find a part of the movie by searching the script, then jump to that part of the movie.
+A Chrome Extension for finding a part of the movie by searching the script, then jump to that part of the movie.
+
+### Development
+
+This has been built using the [chrome-extension-boilerplate-react](https://github.com/lxieyang/chrome-extension-boilerplate-react)! It has made it very easy to bootstrap a typescript based Chrome Extension using Manifest version 3. But there are a few snafu's.
+
+The use of the development command (`yarn start`) causes issues with SockJS and most pages during development doing this crashes. So instead you must use `yarn build` and reload the extension in Chrome every time changes are made. It's not ideal but that's what you have to do.
 
 ### search for subtitles
 
@@ -55,7 +61,7 @@ PUT
 
 PUT
 Media > Part (for part ID)
-`https://192-168-2-27.7e69df2cf3a14143b7ecdd7920a07853.plex.direct:32400/library/parts/9321?subtitleStreamID=0
+`https://192-168-2-27.7e69df2cf3a14143b7ecdd7920a07853.plex.direct:32400/library/parts/9321?subtitleStreamID=0d
 &X-Plex-Product=Plex%20Web
 &X-Plex-Version=4.121.1
 &X-Plex-Client-Identifier=191gnhmhql5gnsry9nl1tqql
