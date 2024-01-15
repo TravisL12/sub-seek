@@ -2,11 +2,11 @@ import srtParser2 from 'srt-parser-2';
 
 import { wait } from './helpers';
 import Api from '../Api';
-import { SUBTITLE_INDICES } from '../constants';
+import { SRT_CODEC, SUBTITLE_INDICES } from '../constants';
 
 class SubSeek {
   constructor(auth, options) {
-    console.table('---- subseek AUTH ----', auth);
+    console.table('---- Subseek AUTH ----', auth);
     this.api = new Api(auth);
     this.auth = auth;
     this.parser = new srtParser2();
@@ -17,6 +17,11 @@ class SubSeek {
 
   getEvents() {
     return this.api.beginEventSource();
+  }
+
+  async getMetadata(keyId) {
+    const resp = await this.api.getMetadata(keyId);
+    return resp;
   }
 
   async resetOrRestoreSubtitles(part, prevSelectedSub) {
@@ -40,11 +45,11 @@ class SubSeek {
         ? undefined
         : prevSub ||
           streams.find(({ format, codec, selected }) => {
-            return (format === 'srt' || codec === 'srt') && selected;
+            return (format === SRT_CODEC || codec === SRT_CODEC) && selected;
           });
 
     let subStream = streams.find(({ format, codec, key }) => {
-      return (format === 'srt' || codec === 'srt') && !!key;
+      return (format === SRT_CODEC || codec === SRT_CODEC) && !!key;
     });
 
     const subtitleSearchResults = await this.api.searchSubFiles(keyId);
@@ -64,21 +69,10 @@ class SubSeek {
     } else {
       const subtitleText = await this.api.getSubFile(subStream.key);
       this.resetOrRestoreSubtitles(part, prevSelectedSub);
+      console.log(resp, 'subseek metadata');
       console.log('subseek SUBTITLES LOADED!', subStream);
       return this.parser.fromSrt(subtitleText);
     }
-  }
-
-  async getMetadata(keyId) {
-    const resp = await this.api.getMetadata(keyId);
-    console.log(resp, 'subseek metadata');
-    return resp;
-  }
-
-  async getSessions() {
-    const resp = await this.api.getSessions();
-    console.log(resp, 'subseek session');
-    return resp;
   }
 }
 

@@ -69,27 +69,10 @@ class Api {
     return eventSource;
   }
 
-  async currentlyWatching() {
-    // fetch from the URL
-    const query = location.hash.split('?')[1];
-    const params = Object.fromEntries(new URLSearchParams(query));
-    if (params.key) {
-      const keyId = params.key.split('/').slice(-1)[0]; // ugly but works
-      const resp = await this.getMetadata(keyId);
-      return { mediaId: keyId, media: resp.MediaContainer.Metadata[0] };
-    }
-  }
-
   async getMetadata(keyId) {
     const url = this.buildRequest(`${ENDPOINTS.metadata}/${keyId}`);
     const resp = await fetchData({ url });
     return resp.MediaContainer.Metadata[0];
-  }
-
-  async getSessions() {
-    const url = this.buildRequest(ENDPOINTS.session);
-    const resp = await fetchData({ url });
-    return resp;
   }
 }
 
