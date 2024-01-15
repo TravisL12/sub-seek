@@ -2,16 +2,17 @@ import srtParser2 from 'srt-parser-2';
 
 import { wait } from './helpers';
 import Api from '../Api';
+import { SUBTITLE_INDICES } from '../constants';
 
 class SubSeek {
-  constructor(auth) {
+  constructor(auth, options) {
     console.table('---- subseek AUTH ----', auth);
     this.api = new Api(auth);
     this.auth = auth;
     this.parser = new srtParser2();
     this.videoEl;
     this.subtitleResults;
-    this.subtitleResultIdx = 0;
+    this.subtitleResultIndices = options[SUBTITLE_INDICES] || {};
   }
 
   getEvents() {
@@ -52,7 +53,11 @@ class SubSeek {
     };
 
     if (!subStream || isNewChoice) {
-      subStream = this.subtitleResults[keyId][this.subtitleResultIdx];
+      const resultIdx =
+        this.subtitleResultIndices[keyId] !== undefined
+          ? this.subtitleResultIndices[keyId]
+          : 0;
+      subStream = this.subtitleResults[keyId][resultIdx];
       await this.api.putSubFile(subStream, keyId);
       await wait(1);
       return this.getSubtitles(keyId, prevSelectedSub ?? 'none'); // call function again to load the subtitles

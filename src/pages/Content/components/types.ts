@@ -1,4 +1,5 @@
 import React from 'react';
+import { SUBTITLE_INDICES } from '../constants';
 
 export type TAuth = {
   token: string;
@@ -27,8 +28,10 @@ export type TSubseek = {
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
   auth: TAuth;
-  subtitleResultIdx: number;
+  subtitleResultIndices: { [key: string]: number };
   subtitleResults?: { [key: string]: any[] };
 };
 
-export type TAppOptions = {};
+export type TAppOptions = {
+  [SUBTITLE_INDICES]?: { [key: string]: number };
+};

@@ -3,7 +3,13 @@ import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import SubSeek from '../modules/SubSeek';
 import { TAuth, TSubseek } from '../components/types';
 
-export const useMutation = (auth?: TAuth) => {
+export const useMutation = ({
+  auth,
+  options,
+}: {
+  auth?: TAuth;
+  options: any;
+}) => {
   const [seek, setSeek] = useState<TSubseek>();
 
   useEffect(() => {
@@ -11,7 +17,7 @@ export const useMutation = (auth?: TAuth) => {
       return;
     }
 
-    const subseek: TSubseek = new SubSeek(auth);
+    const subseek: TSubseek = new SubSeek(auth, options);
 
     const addVideoElement = (mutationList: any) => {
       const allAdded: any[] = mutationList

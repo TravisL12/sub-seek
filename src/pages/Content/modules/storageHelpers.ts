@@ -2,7 +2,7 @@ import { TAppOptions } from '../components/types';
 
 // LOCAL STORAGE
 export const getLocalChrome = (
-  options: (keyof TAppOptions)[],
+  options: string[],
   callback: (params?: any) => void
 ) => {
   chrome.storage.local.get(options, callback);

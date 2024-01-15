@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { SUBTITLE_INDICES } from '../constants';
 import { useEventSource } from '../hooks/useEventSource';
 import { useToggleSidebar } from '../hooks/useToggleSidebar';
+import { setLocalChrome } from '../modules/storageHelpers';
 
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
@@ -148,9 +150,13 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
           {subtitleResults?.[playing.ratingKey] && (
             <div>
               <select
-                value={+subseek.subtitleResultIdx}
+                value={+subseek.subtitleResultIndices[playing.ratingKey]}
                 onChange={(event) => {
-                  subseek.subtitleResultIdx = +event.target.value;
+                  subseek.subtitleResultIndices[playing.ratingKey] =
+                    +event.target.value;
+                  setLocalChrome({
+                    [SUBTITLE_INDICES]: subseek.subtitleResultIndices,
+                  });
                   getSubtitles(true);
                 }}
               >
