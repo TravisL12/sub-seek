@@ -28,6 +28,7 @@ export type TSubseek = {
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
   auth: TAuth;
+  currentMedia?: any;
   subtitleResultIndices: { [key: string]: number };
   subtitleResults?: { [key: string]: any[] };
 };

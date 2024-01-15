@@ -17,6 +17,10 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     useState<TSubseek['subtitleResults']>();
 
   useEffect(() => {
+    console.log(subseek?.currentMedia, 'subseek metadata');
+  }, [subseek?.currentMedia]);
+
+  useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
       scrollToSub(selectedSub, 'instant');
       setSelectedSub(undefined);

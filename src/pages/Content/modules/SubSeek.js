@@ -12,6 +12,7 @@ class SubSeek {
     this.parser = new srtParser2();
     this.videoEl;
     this.subtitleResults;
+    this.currentMedia;
     this.subtitleResultIndices = options[SUBTITLE_INDICES] || {};
   }
 
@@ -67,10 +68,10 @@ class SubSeek {
       await wait(1);
       return this.getSubtitles(keyId, prevSelectedSub ?? 'none'); // call function again to load the subtitles
     } else {
+      console.log('subseek SUBTITLES LOADED!', subStream);
       const subtitleText = await this.api.getSubFile(subStream.key);
       this.resetOrRestoreSubtitles(part, prevSelectedSub);
-      console.log(resp, 'subseek metadata');
-      console.log('subseek SUBTITLES LOADED!', subStream);
+      this.currentMedia = media;
       return this.parser.fromSrt(subtitleText);
     }
   }
