@@ -1,5 +1,4 @@
-
-![SubSeekLogo](https://github.com/TravisL12/sub-seek/assets/2141322/c0403eb9-eab7-433f-b0bb-56622903acc2)
+![SubSeekLogo](https://github.com/TravisL12/sub-seek/assets/2141322/7b503732-feed-43da-8d1b-ecca16c058ab)
 
 # Plex SubSeek
 
