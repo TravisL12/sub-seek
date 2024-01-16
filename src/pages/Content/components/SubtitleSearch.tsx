@@ -164,40 +164,43 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
             <button onClick={closeSubSeek}>Close</button>
           </div>
         </div>
-        <div
-          className="flex flex--between"
-          style={{ gap: '20px', marginTop: '10px' }}
-        >
+        <div className="flex flex--between" style={{ gap: '20px' }}>
           <div className="search--input">
-            <input
-              placeholder="Search subtitles"
-              type="text"
-              value={searchValue}
-              onChange={filterSubtitles}
-            />
+            <div>
+              <label>Search</label>
+              <input
+                placeholder="Search subtitles"
+                type="text"
+                value={searchValue}
+                onChange={filterSubtitles}
+              />
+            </div>
             {!!searchValue && <button onClick={resetSearch}>Clear</button>}
           </div>
           <div className="search--select">
             {subtitleResults?.[playing.ratingKey] && (
-              <select
-                value={+subseek.subtitleResultIndices[playing.ratingKey]}
-                onChange={(event) => {
-                  subseek.subtitleResultIndices[playing.ratingKey] =
-                    +event.target.value;
-                  setLocalChrome({
-                    [SUBTITLE_INDICES]: subseek.subtitleResultIndices,
-                  });
-                  getSubtitles(true);
-                }}
-              >
-                {subtitleResults[playing.ratingKey].map((result, idx) => {
-                  return (
-                    <option value={idx}>
-                      {result.title || result.displayTitle}
-                    </option>
-                  );
-                })}
-              </select>
+              <div>
+                <label>Change Subtitle</label>
+                <select
+                  value={+subseek.subtitleResultIndices[playing.ratingKey]}
+                  onChange={(event) => {
+                    subseek.subtitleResultIndices[playing.ratingKey] =
+                      +event.target.value;
+                    setLocalChrome({
+                      [SUBTITLE_INDICES]: subseek.subtitleResultIndices,
+                    });
+                    getSubtitles(true);
+                  }}
+                >
+                  {subtitleResults[playing.ratingKey].map((result, idx) => {
+                    return (
+                      <option value={idx}>
+                        {result.title || result.displayTitle}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             )}
           </div>
         </div>

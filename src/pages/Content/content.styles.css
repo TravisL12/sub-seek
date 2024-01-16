@@ -82,12 +82,21 @@ h3 {
       width: 250px;
       gap: 10px;
 
+      label {
+        margin: 0;
+      }
+
       input {
         width: 100%;
       }
     }
+
     .search--select {
       flex: 1;
+
+      label {
+        margin: 0;
+      }
 
       select {
         width: 100%;
