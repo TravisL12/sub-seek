@@ -10,7 +10,8 @@ export const ENDPOINTS = {
 
 export const SRT_CODEC = 'srt';
 
-export const PLEX_TV_URL = 'https://plex.tv/pms/resources?includeHttps=1';
+export const PLEX_TV_URL =
+  'https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=1';
 
 export const VIDEO_PLAYER_SELECTOR = 'video[class^="HTMLMedia-mediaElement"]';
 
