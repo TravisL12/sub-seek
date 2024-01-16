@@ -79,7 +79,7 @@ h3 {
 
     .search--input {
       display: flex;
-      width: 250px;
+      width: 350px;
       gap: 10px;
 
       label {
@@ -88,6 +88,9 @@ h3 {
 
       input {
         width: 100%;
+        border: none;
+        padding: 4px;
+        border-radius: 5px;
       }
     }
 
@@ -100,6 +103,9 @@ h3 {
 
       select {
         width: 100%;
+        border: none;
+        padding: 4px;
+        border-radius: 5px;
       }
     }
   }

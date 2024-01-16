@@ -166,7 +166,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
         </div>
         <div className="flex flex--between" style={{ gap: '20px' }}>
           <div className="search--input">
-            <div>
+            <div style={{ width: '100%' }}>
               <label>Search</label>
               <input
                 placeholder="Search subtitles"
