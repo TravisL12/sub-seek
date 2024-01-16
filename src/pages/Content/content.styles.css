@@ -30,6 +30,12 @@ h3 {
     &.between {
       justify-content: space-between;
     }
+    &.justify-center {
+      justify-content: center;
+    }
+    &.align-center {
+      align-items: center;
+    }
   }
 
   .footer {
@@ -44,10 +50,10 @@ h3 {
 
   button {
     line-height: unset;
-    background: rgb(50, 50, 50);
+    background: #696969;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     padding: 0px 8px;
 
     &:hover {

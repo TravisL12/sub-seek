@@ -14,11 +14,13 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
   const [playing, setPlaying] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
   const [subtitleResults, setSubtitleResults] =
     useState<TSubseek['subtitleResults']>();
 
   useEffect(() => {
     if (subseek?.currentMedia) {
+      setIsLoading(false);
       resetSearch();
     }
   }, [subseek?.currentMedia]);
@@ -31,6 +33,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   }, [searchValue]);
 
   const getSubtitles = async (isNewChoice?: boolean) => {
+    setIsLoading(true);
     const subs = await subseek.getSubtitles(
       playing.ratingKey,
       undefined,
@@ -173,6 +176,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
                 type="text"
                 value={searchValue}
                 onChange={filterSubtitles}
+                disabled={isLoading}
               />
             </div>
             {!!searchValue && <button onClick={resetSearch}>Clear</button>}
@@ -182,6 +186,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
               <div>
                 <label>Change Subtitle</label>
                 <select
+                  disabled={isLoading}
                   value={+subseek.subtitleResultIndices[playing.ratingKey]}
                   onChange={(event) => {
                     subseek.subtitleResultIndices[playing.ratingKey] =
@@ -205,16 +210,26 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
           </div>
         </div>
       </div>
-      <div className="subtitle-container">
-        {filterSubs?.map((sub) => (
-          <SubtitleItem
-            subtitle={sub}
-            isSelected={selectedSub?.id === sub.id}
-            seekTo={(time: number) => {
-              seekTo(time, sub);
-            }}
-          />
-        ))}
+      <div
+        className={`subtitle-container ${
+          isLoading ? 'justify-center align-center' : ''
+        }`}
+      >
+        {isLoading ? (
+          <div className="flex justify-center">
+            <h1>Loading</h1>
+          </div>
+        ) : (
+          filterSubs?.map((sub) => (
+            <SubtitleItem
+              subtitle={sub}
+              isSelected={selectedSub?.id === sub.id}
+              seekTo={(time: number) => {
+                seekTo(time, sub);
+              }}
+            />
+          ))
+        )}
       </div>
       <div className="footer">
         <img src={chrome.runtime.getURL(SubseekLogo)} />
