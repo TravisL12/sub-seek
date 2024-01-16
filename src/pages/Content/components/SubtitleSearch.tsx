@@ -3,6 +3,7 @@ import { SUBTITLE_INDICES } from '../constants';
 import { useEventSource } from '../hooks/useEventSource';
 import { useToggleSidebar } from '../hooks/useToggleSidebar';
 import { setLocalChrome } from '../modules/storageHelpers';
+import SubseekLogo from '../../../assets/img/SubSeekLogo.png';
 
 import SubtitleItem from './SubtitleItem';
 import { TSubseek, TSubtitle } from './types';
@@ -15,6 +16,12 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [playing, setPlaying] = useState<any>();
   const [subtitleResults, setSubtitleResults] =
     useState<TSubseek['subtitleResults']>();
+
+  useEffect(() => {
+    if (subseek?.currentMedia) {
+      console.log(subseek?.currentMedia, 'subseek metadata');
+    }
+  }, [subseek?.currentMedia]);
 
   useEffect(() => {
     if (!searchValue && selectedSub?.ref?.current) {
@@ -131,13 +138,33 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     <div className={`Content-App ${isClosed ? 'sub-seek-closed' : ''}`}>
       <div className="media-title">
         <div className="title">
-          <h1>SubSeek</h1>
+          <div className="flex">
+            <div style={{ height: '100px' }}>
+              {subseek?.currentMedia?.thumb && (
+                <img
+                  src={`${subseek?.api.buildRequest(
+                    subseek?.currentMedia?.thumb
+                  )}`}
+                />
+              )}
+            </div>
+            <div className="flex column" style={{ marginLeft: '20px' }}>
+              <p style={{ fontSize: '28px' }}>
+                {subseek?.currentMedia?.title || 'SubSeek'}
+              </p>
+              <div>
+                <button onClick={selectSubAtCurrentTime}>Go to Current</button>
+              </div>
+            </div>
+          </div>
           <div className="title--buttons">
-            <button onClick={selectSubAtCurrentTime}>Go to Current</button>
             <button onClick={closeSubSeek}>Close</button>
           </div>
         </div>
-        <div className="flex--between">
+        <div
+          className="flex flex--between"
+          style={{ gap: '20px', marginTop: '10px' }}
+        >
           <div className="search--input">
             <input
               placeholder="Search subtitles"
@@ -147,8 +174,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
             />
             {!!searchValue && <button onClick={resetSearch}>Clear</button>}
           </div>
-          {subtitleResults?.[playing.ratingKey] && (
-            <div>
+          <div className="search--select">
+            {subtitleResults?.[playing.ratingKey] && (
               <select
                 value={+subseek.subtitleResultIndices[playing.ratingKey]}
                 onChange={(event) => {
@@ -168,8 +195,8 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
                   );
                 })}
               </select>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       <div className="subtitle-container">
@@ -182,6 +209,9 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
             }}
           />
         ))}
+      </div>
+      <div className="footer">
+        <img src={chrome.runtime.getURL(SubseekLogo)} />
       </div>
     </div>
   );
