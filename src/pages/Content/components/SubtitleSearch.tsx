@@ -179,7 +179,11 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
                 disabled={isLoading}
               />
             </div>
-            {!!searchValue && <button onClick={resetSearch}>Clear</button>}
+            {!!searchValue && (
+              <div className="flex align-end">
+                <button onClick={resetSearch}>Clear</button>
+              </div>
+            )}
           </div>
           <div className="search--select">
             {subtitleResults?.[playing.ratingKey] && (

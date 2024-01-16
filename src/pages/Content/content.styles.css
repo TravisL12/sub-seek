@@ -36,6 +36,9 @@ h3 {
     &.align-center {
       align-items: center;
     }
+    &.align-end {
+      align-items: flex-end;
+    }
   }
 
   .footer {
@@ -75,12 +78,12 @@ h3 {
         overflow: hidden;
         text-overflow: ellipsis;
       }
+    }
 
-      .title--buttons {
-        display: flex;
-        align-items: flex-start;
-        gap: 20px;
-      }
+    .title--buttons {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
     }
 
     .search--input {
