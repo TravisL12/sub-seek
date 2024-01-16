@@ -57,12 +57,11 @@ export const fetchData = async ({ url, isJson = true, httpMethod = 'GET' }) => {
   return await (await fetch(url, { method: httpMethod })).text();
 };
 
-const pingServer = async ({ serverUrl, clientIdentifier, token }) => {
+const pingServer = ({ serverUrl, clientIdentifier, token }) => {
   const url = `${serverUrl}/connections?X-Plex-Client-Identifier=${clientIdentifier}&X-Plex-Token=${token}`;
-  const resp = await fetch(url);
-  const text = await resp.text();
-  const result = parseXml(text);
-  return !!result;
+  return fetch(url).then(() => {
+    return serverUrl;
+  });
 };
 
 export const getDevice = async () => {
@@ -78,30 +77,23 @@ export const getDevice = async () => {
       const isMatchedToken = plexToken === token;
       return isMatchedToken || !device.connections ? device.connections : [];
     })
-    .flat()
-    .reverse(); // reverse to do the external IPs first
+    .flat();
 
-  let server;
-  for (let i = 0; i < connections.length; i++) {
-    try {
-      const o = connections[i];
-      const s = await pingServer({
-        serverUrl: o.uri,
-        token: plexToken,
-        clientIdentifier,
-      });
-      if (s) {
-        server = o;
-        break;
-      }
-    } catch (err) {
-      console.log('subseek server fetch fail', err);
-      continue;
+  const connectionHealth = connections.map((o) => {
+    if (!o?.uri) {
+      return null;
     }
-  }
+    return pingServer({
+      serverUrl: o.uri,
+      token: plexToken,
+      clientIdentifier,
+    });
+  });
+
+  const serverUrl = await Promise.race(connectionHealth.filter((x) => x));
 
   return {
-    serverUrl: server.uri,
+    serverUrl,
     token: plexToken,
     clientIdentifier,
   };
