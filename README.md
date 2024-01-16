@@ -1,5 +1,3 @@
-![SubSeekLogo](https://github.com/TravisL12/sub-seek/assets/2141322/7b503732-feed-43da-8d1b-ecca16c058ab)
-
 # Plex SubSeek
 
 A Chrome Extension for finding a part of the movie by searching the subtitles, then jump to that part of the movie.
