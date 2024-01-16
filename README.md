@@ -2,6 +2,10 @@
 
 A Chrome Extension for finding a part of the movie by searching the script, then jump to that part of the movie.
 
+### Logo Design
+
+https://www.fontspace.com/category/blade-runner
+
 ### Development
 
 This has been built using the [chrome-extension-boilerplate-react](https://github.com/lxieyang/chrome-extension-boilerplate-react)! It has made it very easy to bootstrap a typescript based Chrome Extension using Manifest version 3. But there are a few snafu's.
