@@ -57,6 +57,16 @@ export const fetchData = async ({ url, isJson = true, httpMethod = 'GET' }) => {
   return await (await fetch(url, { method: httpMethod })).text();
 };
 
+const pingServer = async ({ serverUrl, clientIdentifier, token }) => {
+  const url = `${serverUrl}/ping?X-Plex-Client-Identifier=${clientIdentifier}&X-Plex-Token=${token}`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const result = parseXml(text);
+  console.log('subseek PONG text?', text);
+  console.log('subseek PONG result?', result);
+  return !!result;
+};
+
 export const getDevice = async () => {
   const plexToken = localStorage['myPlexAccessToken'];
   const clientIdentifier = localStorage['clientID'];
