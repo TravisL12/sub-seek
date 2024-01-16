@@ -19,7 +19,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
 
   useEffect(() => {
     if (subseek?.currentMedia) {
-      console.log(subseek?.currentMedia, 'subseek metadata');
+      resetSearch();
     }
   }, [subseek?.currentMedia]);
 
@@ -149,7 +149,10 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
               )}
             </div>
             <div className="flex column" style={{ marginLeft: '20px' }}>
-              <p style={{ fontSize: '28px' }}>
+              <p
+                className="title--text"
+                title={subseek?.currentMedia?.title || 'SubSeek'}
+              >
                 {subseek?.currentMedia?.title || 'SubSeek'}
               </p>
               <div>

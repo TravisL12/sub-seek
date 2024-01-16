@@ -62,6 +62,14 @@ h3 {
       display: flex;
       justify-content: space-between;
 
+      .title--text {
+        width: 410px;
+        font-size: 28px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       .title--buttons {
         display: flex;
         align-items: flex-start;
