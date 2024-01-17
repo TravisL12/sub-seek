@@ -9,7 +9,7 @@
     "default_icon": "icon-192.png"
   },
   "icons": {
-    "128": "icon-128.png"
+    "192": "icon-192.png"
   },
   "content_scripts": [
     {
