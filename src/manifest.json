@@ -3,7 +3,7 @@
   "name": "SubSeek",
   "description": "Seek to parts of a movie by searching the subtitles",
   "background": { "service_worker": "background.bundle.js" },
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab"],
   "action": {
     "default_title": "Open SubSeek",
     "default_icon": "icon-192.png"

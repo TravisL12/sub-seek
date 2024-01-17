@@ -4,6 +4,11 @@ chrome.action.onClicked.addListener(() => {
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const activeTab = tabs[0];
+      if (!activeTab.url.includes('plex')) {
+        console.log('Not on Plex!');
+        return;
+      }
+
       if (isOpen) {
         chrome.tabs.sendMessage(activeTab.id, {
           message: 'closeSubSeek',
