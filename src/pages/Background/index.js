@@ -4,7 +4,7 @@ chrome.action.onClicked.addListener(() => {
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const activeTab = tabs[0];
-      if (!activeTab.url.includes('plex')) {
+      if (!activeTab.url.includes('plex.tv')) {
         console.log('Not on Plex!');
         return;
       }
