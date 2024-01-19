@@ -33,7 +33,7 @@ export const useAuth = () => {
     const isNewServer =
       !currentServerId ||
       currentServer?.remoteClientIdentifier !== currentServerId;
-    if (isNewServer) {
+    if (isNewServer && currentServer) {
       const { token } = currentServer;
       const serverUrl = await getServerUrl(currentServer, clientIdentifier);
       const newAuth = { token, serverUrl, clientIdentifier };
