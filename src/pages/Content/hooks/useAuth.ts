@@ -12,6 +12,7 @@ import { TAuth, TServerDevice } from '../components/types';
 export const useAuth = () => {
   const [servers, setServers] = useState<TServerDevice[]>();
   const [auth, setAuth] = useState<TAuth>();
+  const [currentServerId, setCurrentServerId] = useState<string>();
   const clientIdentifier = localStorage['clientID'];
 
   useEffect(() => {
@@ -29,15 +30,16 @@ export const useAuth = () => {
       return location.hash.includes(device.remoteClientIdentifier);
     });
 
-    if (currentServer) {
+    const isNewServer =
+      !currentServerId ||
+      currentServer?.remoteClientIdentifier !== currentServerId;
+    if (isNewServer) {
       const { token } = currentServer;
       const serverUrl = await getServerUrl(currentServer, clientIdentifier);
-      console.log('---- Subseek AUTH ----', {
-        token,
-        serverUrl,
-        clientIdentifier,
-      });
-      setAuth({ token, serverUrl, clientIdentifier });
+      const newAuth = { token, serverUrl, clientIdentifier };
+      setAuth(newAuth);
+      setCurrentServerId(currentServer.remoteClientIdentifier);
+      console.log('---- Subseek AUTH ----', newAuth);
     }
   };
 
