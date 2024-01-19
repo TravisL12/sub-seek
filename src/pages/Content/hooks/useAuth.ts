@@ -40,6 +40,7 @@ export const useAuth = () => {
     const fetchServers = async () => {
       const serverDevices = await getServers(clientIdentifier);
       setServers(serverDevices);
+      getAuth(serverDevices);
     };
     fetchServers();
   }, []);
