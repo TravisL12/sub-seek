@@ -7,6 +7,15 @@ export type TAuth = {
   clientIdentifier: string;
 };
 
+type TConnection = {
+  uri: string;
+};
+export type TServerDevice = {
+  token: string;
+  remoteClientIdentifier: string;
+  connections: TConnection[];
+};
+
 export type TSubtitle = {
   id: string;
   startTime: string;

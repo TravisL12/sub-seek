@@ -87,6 +87,9 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
 
   useEventSource(subseek, {
     playing: playingEvent,
+    activity: (event) => {
+      console.log('subseek activity data', event.data);
+    },
   });
 
   const filterSubtitles = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -8,5 +8,6 @@ export const useEventSource = (
   useEffect(() => {
     const eventSource: EventSource = subseek.getEvents();
     eventSource.addEventListener('playing', eventCallbacks.playing);
+    // eventSource.addEventListener('activity', eventCallbacks.activity);
   }, [subseek]);
 };
