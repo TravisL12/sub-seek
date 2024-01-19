@@ -6,7 +6,6 @@ import { SRT_CODEC, SUBTITLE_INDICES } from '../constants';
 
 class SubSeek {
   constructor(auth, options) {
-    console.table('---- Subseek AUTH ----', auth);
     this.api = new Api(auth);
     this.auth = auth;
     this.parser = new srtParser2();

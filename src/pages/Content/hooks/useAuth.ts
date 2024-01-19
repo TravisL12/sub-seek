@@ -32,6 +32,11 @@ export const useAuth = () => {
     if (currentServer) {
       const { token } = currentServer;
       const serverUrl = await getServerUrl(currentServer, clientIdentifier);
+      console.log('---- Subseek AUTH ----', {
+        token,
+        serverUrl,
+        clientIdentifier,
+      });
       setAuth({ token, serverUrl, clientIdentifier });
     }
   };
