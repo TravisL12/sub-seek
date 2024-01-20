@@ -54,6 +54,7 @@ export const getServers = async (clientIdentifier) => {
   const result = await fetch(url, { headers: { accept: 'application/json' } }); // calling to PLEX_TV_URL doesn't accept JSON
   const devices = await result.json();
 
+  console.log('subseek devices', devices);
   return devices.map((device) => ({
     token: device.accessToken,
     remoteClientIdentifier: device.clientIdentifier,

@@ -13,13 +13,14 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const [subtitles, setSubtitles] = useState<TSubtitle[]>();
   const [filterSubs, setFiltersubs] = useState<TSubtitle[]>();
   const [selectedSub, setSelectedSub] = useState<TSubtitle>();
-  const [playing, setPlaying] = useState<any>();
+  const [nowPlaying, setNowPlaying] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
   const [subtitleResults, setSubtitleResults] =
     useState<TSubseek['subtitleResults']>();
 
   useEffect(() => {
     if (subseek?.currentMedia) {
+      console.log('subseek now nowPlaying', subseek.currentMedia);
       setIsLoading(false);
       resetSearch();
     }
@@ -35,12 +36,13 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const getSubtitles = async (isNewChoice?: boolean) => {
     setIsLoading(true);
     const subs = await subseek.getSubtitles(
-      playing.ratingKey,
+      nowPlaying.ratingKey,
       undefined,
       isNewChoice
     );
     const subsWithRef = subs.map((sub) => ({
       ...sub,
+      text: sub.text.replace(/<\/?\S>/gi, ''),
       ref: React.createRef(),
     }));
     setSubtitleResults(subseek.subtitleResults);
@@ -49,17 +51,17 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   };
 
   useEffect(() => {
-    if (!playing?.ratingKey) {
+    if (!nowPlaying?.ratingKey) {
       return;
     }
     getSubtitles();
-  }, [playing?.ratingKey]);
+  }, [nowPlaying?.ratingKey]);
 
   useEffect(() => {
-    if (playing?.state === 'paused' || !subseek.videoEl) {
+    if (nowPlaying?.state === 'paused' || !subseek.videoEl) {
       closeSubSeek();
     }
-  }, [playing?.state, subseek?.videoEl]);
+  }, [nowPlaying?.state, subseek?.videoEl]);
 
   const { closeSubSeek, isClosed } = useToggleSidebar({
     setSelectedSub,
@@ -78,7 +80,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
         playing.clientIdentifier === subseek.auth.clientIdentifier;
 
       if (isClient) {
-        setPlaying(playing);
+        setNowPlaying(playing);
       }
     } catch (err) {
       console.log('subseek play event error', err);
@@ -107,10 +109,12 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   };
 
   const scrollToSub = (subtitle: TSubtitle, behavior: string = 'smooth') => {
-    subtitle.ref?.current.scrollIntoView({
-      behavior,
-      block: 'center',
-    });
+    if (subtitle?.ref?.current) {
+      subtitle.ref.current.scrollIntoView({
+        behavior,
+        block: 'center',
+      });
+    }
   };
 
   const selectSubAtCurrentTime = () => {
@@ -189,14 +193,14 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
             )}
           </div>
           <div className="search--select">
-            {subtitleResults?.[playing.ratingKey] && (
+            {subtitleResults?.[nowPlaying.ratingKey] && (
               <div>
                 <label>Change Subtitle</label>
                 <select
                   disabled={isLoading}
-                  value={+subseek.subtitleResultIndices[playing.ratingKey]}
+                  value={+subseek.subtitleResultIndices[nowPlaying.ratingKey]}
                   onChange={(event) => {
-                    subseek.subtitleResultIndices[playing.ratingKey] =
+                    subseek.subtitleResultIndices[nowPlaying.ratingKey] =
                       +event.target.value;
                     setLocalChrome({
                       [SUBTITLE_INDICES]: subseek.subtitleResultIndices,
@@ -204,7 +208,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
                     getSubtitles(true);
                   }}
                 >
-                  {subtitleResults[playing.ratingKey].map((result, idx) => {
+                  {subtitleResults[nowPlaying.ratingKey].map((result, idx) => {
                     return (
                       <option value={idx}>
                         {result.title || result.displayTitle}
