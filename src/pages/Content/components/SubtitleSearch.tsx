@@ -106,6 +106,7 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const resetSearch = () => {
     setSearchValue('');
     setFiltersubs(subtitles);
+    selectSubAtCurrentTime();
   };
 
   const scrollToSub = (subtitle: TSubtitle, behavior: string = 'smooth') => {
