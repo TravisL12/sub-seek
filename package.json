@@ -1,7 +1,7 @@
 {
   "name": "sub-seek",
   "version": "0.0.3",
-  "description": "Seek to parts of a movie by searching the subtitles",
+  "description": "Seek to parts of a Plex movie by searching the subtitles",
   "license": "MIT",
   "repository": {
     "type": "git",
