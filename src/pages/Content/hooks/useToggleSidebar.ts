@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // Have to keep the chrome.action state (in background.js) in line with the component
 // so there is some things happening here

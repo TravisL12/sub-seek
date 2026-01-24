@@ -9,9 +9,9 @@ class SubSeek {
     this.api = new Api(auth);
     this.auth = auth;
     this.parser = new srtParser2();
-    this.videoEl;
-    this.subtitleResults;
-    this.currentMedia;
+    this.videoEl = undefined;
+    this.subtitleResults = undefined;
+    this.currentMedia = undefined;
     this.subtitleResultIndices = options[SUBTITLE_INDICES] || {};
   }
 
