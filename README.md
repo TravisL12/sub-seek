@@ -2,6 +2,8 @@
 
 A Chrome Extension for finding a part of the movie by searching the subtitles, then jump to that part of the movie.
 
+https://chromewebstore.google.com/detail/subseek/oakebagpkfjopemoebopojkfdbiojebn
+
 ### Features
 
 - Maintains displayed subtitles if selected
