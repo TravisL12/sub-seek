@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import { VIDEO_PLAYER_SELECTOR } from '../constants';
 import SubSeek from '../modules/SubSeek';
-import { TAuth, TSubseek } from '../components/types';
+import { TAppOptions, TAuth, TSubseek } from '../components/types';
+
+const getNodes = (
+  mutationList: MutationRecord[],
+  key: 'addedNodes' | 'removedNodes'
+) =>
+  mutationList.flatMap((record) => Array.from(record[key])) as Element[];
 
 export const useMutation = ({
   auth,
   options,
 }: {
   auth?: TAuth;
-  options: any;
+  options: TAppOptions;
 }) => {
   const [seek, setSeek] = useState<TSubseek>();
 
@@ -19,27 +25,21 @@ export const useMutation = ({
 
     const subseek: TSubseek = new SubSeek(auth, options);
 
-    const addVideoElement = (mutationList: any) => {
-      const allAdded: any[] = mutationList
-        .map((listItem: any) => Array.from(listItem.addedNodes))
-        .flat();
-
-      const vidContainer = allAdded.find((el) => {
+    const addVideoElement = (mutationList: MutationRecord[]) => {
+      const vidContainer = getNodes(mutationList, 'addedNodes').find((el) => {
         return el?.querySelector && el.querySelector(VIDEO_PLAYER_SELECTOR);
       });
 
       if (vidContainer) {
-        subseek.videoEl = vidContainer.querySelector(VIDEO_PLAYER_SELECTOR);
+        subseek.videoEl =
+          vidContainer.querySelector<HTMLVideoElement>(VIDEO_PLAYER_SELECTOR) ??
+          undefined;
         setSeek(subseek);
       }
     };
 
-    const removeVideoElement = (mutationList: any) => {
-      const allRemoved: any[] = mutationList
-        .map((listItem: any) => Array.from(listItem.removedNodes))
-        .flat();
-
-      const vidContainer = allRemoved.find((el) => {
+    const removeVideoElement = (mutationList: MutationRecord[]) => {
+      const vidContainer = getNodes(mutationList, 'removedNodes').find((el) => {
         return el?.tagName && el.tagName === 'VIDEO';
       });
 
@@ -54,8 +54,7 @@ export const useMutation = ({
       removeVideoElement(mutationList);
     });
 
-    // @ts-ignore
-    mutationObserver.observe(document.getElementById('plex'), {
+    mutationObserver.observe(document.getElementById('plex')!, {
       subtree: true,
       childList: true,
     });

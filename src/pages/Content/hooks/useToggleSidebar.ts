@@ -10,27 +10,15 @@ export const useToggleSidebar = ({
   const [isListenerSet, setIsListenerSet] = useState(false);
   const [isClosed, setIsClosed] = useState(true);
 
-  const sendClosedMessage = () => {
-    chrome.runtime.sendMessage({
-      type: 'closeSubSeek',
-    });
-  };
-
-  const sendOpenedMessage = () => {
-    chrome.runtime.sendMessage({
-      type: 'openSubSeek',
-    });
-  };
-
   const onOpen = () => {
     setIsClosed(false);
-    sendOpenedMessage();
+    chrome.runtime.sendMessage({ type: 'openSubSeek' });
   };
 
   const onClose = () => {
     setSelectedSub(undefined);
     setIsClosed(true);
-    sendClosedMessage();
+    chrome.runtime.sendMessage({ type: 'closeSubSeek' });
   };
 
   if (!isListenerSet) {

@@ -17,56 +17,44 @@ class Api {
     return base;
   }
 
-  async getSubFile(subKey) {
+  getSubFile(subKey) {
     const url = this.buildRequest(subKey);
-    const resp = await fetchData({ url, isJson: false });
-    return resp;
+    return fetchData({ url, isJson: false });
   }
 
-  async resetSubFile(partKey) {
+  setPartSubtitleStream(partKey, extra) {
     const url = this.buildRequest(`${ENDPOINTS.parts}/${partKey}`);
-    const resp = await fetchData({
-      url: url + '&subtitleStreamID=0',
-      isJson: false,
-      httpMethod: 'PUT',
-    });
-    return resp;
+    return fetchData({ url: url + extra, isJson: false, httpMethod: 'PUT' });
   }
 
-  async restoreSubFile(partKey, streamId) {
-    const url = this.buildRequest(`${ENDPOINTS.parts}/${partKey}`);
-    const resp = await fetchData({
-      url: url + `&subtitleStreamID=${streamId}&allParts=1`,
-      isJson: false,
-      httpMethod: 'PUT',
-    });
-    return resp;
+  resetSubFile(partKey) {
+    return this.setPartSubtitleStream(partKey, '&subtitleStreamID=0');
   }
 
-  async putSubFile(subtitle, id) {
+  restoreSubFile(partKey, streamId) {
+    return this.setPartSubtitleStream(
+      partKey,
+      `&subtitleStreamID=${streamId}&allParts=1`
+    );
+  }
+
+  putSubFile(subtitle, id) {
     const { key, codec, languageCode: language, providerTitle } = subtitle;
     const extra = `&key=${key}&hearingImpaired=0&forced=0&language=${language}&providerTitle=${providerTitle}&codec=${codec}`;
     const url = this.buildRequest(`${ENDPOINTS.metadata}/${id}/subtitles`);
-    const resp = await fetchData({
-      url: `${url + extra}`,
-      isJson: false,
-      httpMethod: 'PUT',
-    });
-    return resp;
+    return fetchData({ url: url + extra, isJson: false, httpMethod: 'PUT' });
   }
 
-  async searchSubFiles(id) {
+  searchSubFiles(id) {
     const extra = '&language=en&hearingImpaired=0&forced=0';
     const url = this.buildRequest(`${ENDPOINTS.metadata}/${id}/subtitles`);
-    const resp = await fetchData({ url: `${url + extra}` });
-    return resp;
+    return fetchData({ url: url + extra });
   }
 
   beginEventSource() {
     const filters = 'activity,playing';
     const url = this.buildRequest(ENDPOINTS.eventSource, filters);
-    const eventSource = new EventSource(url);
-    return eventSource;
+    return new EventSource(url);
   }
 
   async getMetadata(keyId) {

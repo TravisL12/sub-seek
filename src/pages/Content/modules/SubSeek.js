@@ -19,9 +19,8 @@ class SubSeek {
     return this.api.beginEventSource();
   }
 
-  async getMetadata(keyId) {
-    const resp = await this.api.getMetadata(keyId);
-    return resp;
+  getMetadata(keyId) {
+    return this.api.getMetadata(keyId);
   }
 
   async resetOrRestoreSubtitles(part, prevSelectedSub) {
@@ -58,16 +57,12 @@ class SubSeek {
     };
 
     if (!subStream || isNewChoice) {
-      const resultIdx =
-        this.subtitleResultIndices[keyId] !== undefined
-          ? this.subtitleResultIndices[keyId]
-          : 0;
+      const resultIdx = this.subtitleResultIndices[keyId] ?? 0;
       subStream = this.subtitleResults[keyId][resultIdx];
       await this.api.putSubFile(subStream, keyId);
       await wait(1);
       return this.getSubtitles(keyId, prevSelectedSub ?? 'none'); // call function again to load the subtitles
     } else {
-      console.log('subseek SUBTITLES LOADED!', subStream);
       const subtitleText = await this.api.getSubFile(subStream.key);
       this.resetOrRestoreSubtitles(part, prevSelectedSub);
       this.currentMedia = media;

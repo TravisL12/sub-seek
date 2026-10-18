@@ -1,10 +1,6 @@
 export const ENDPOINTS = {
-  session: '/status/sessions',
   metadata: '/library/metadata',
-  sections: '/library/sections',
-  streams: '/library/stream',
   parts: '/library/parts',
-  devices: '/devices',
   eventSource: '/:/eventsource/notifications',
 };
 
@@ -17,3 +13,6 @@ export const VIDEO_PLAYER_SELECTOR = 'video[class^="HTMLMedia-mediaElement"]';
 
 export const SUBTITLE_INDICES = 'subtitleIndices';
 export const LOCAL_OPTIONS = [SUBTITLE_INDICES];
+
+// Seeking to a line starts this many seconds early so the line isn't clipped
+export const SEEK_LEAD_IN_SECONDS = 1.5;

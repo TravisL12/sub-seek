@@ -1,7 +1,12 @@
 import { PLEX_TV_URL } from '../constants';
 
+// Drops the milliseconds from an SRT timestamp (01:27:14,350 -> 01:27:14)
 export const formatTimestamp = (timestamp) => {
-  return /^\d{1,2}:\d{1,2}:\d{1,2}/i.exec(timestamp);
+  return /^\d{1,2}:\d{1,2}:\d{1,2}/.exec(timestamp)?.[0] ?? timestamp;
+};
+
+export const escapeRegExp = (value) => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 export const wait = (num) => {
@@ -54,7 +59,6 @@ export const getServers = async (clientIdentifier) => {
   const result = await fetch(url, { headers: { accept: 'application/json' } }); // calling to PLEX_TV_URL doesn't accept JSON
   const devices = await result.json();
 
-  console.log('subseek devices', devices);
   return devices.map((device) => ({
     token: device.accessToken,
     remoteClientIdentifier: device.clientIdentifier,
