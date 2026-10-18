@@ -159,6 +159,7 @@ h3 {
       padding: 5px 10px;
       border-bottom: 1px solid black;
       transition: 1.5s linear box-shadow;
+      cursor: pointer;
 
       .subtitle-item--timestamp {
         display: inline-block;

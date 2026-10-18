@@ -11,23 +11,28 @@ const SubtitleItem = ({
   isSelected: boolean;
   seekTo: (time: number) => void;
 }) => {
+  const onSeek = () => {
+    seekTo(subtitle.startSeconds);
+  };
+
   return (
     <div
       ref={subtitle.ref}
       className={`subtitle-item ${isSelected ? 'selected' : ''}`}
+      role="button"
+      tabIndex={0}
+      title="Seek to scene"
+      onClick={onSeek}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSeek();
+        }
+      }}
     >
-      <div className="flex between">
-        <p className="subtitle-item--timestamp">
-          {formatTimestamp(subtitle.startTime)}
-        </p>
-        <button
-          onClick={() => {
-            seekTo(subtitle.startSeconds);
-          }}
-        >
-          Seek to scene
-        </button>
-      </div>
+      <p className="subtitle-item--timestamp">
+        {formatTimestamp(subtitle.startTime)}
+      </p>
       <p className="subtitle-item--text">{subtitle.text}</p>
     </div>
   );

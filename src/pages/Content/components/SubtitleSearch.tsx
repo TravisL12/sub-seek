@@ -27,10 +27,10 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     }
   }, [subseek?.currentMedia]);
 
+  // Runs after the unfiltered list has rendered, so every row's ref is attached
   useEffect(() => {
-    if (!searchValue && selectedSub?.ref?.current) {
-      scrollToSub(selectedSub, 'instant');
-      setSelectedSub(undefined);
+    if (!searchValue) {
+      selectSubAtCurrentTime();
     }
   }, [searchValue]);
 
@@ -109,7 +109,6 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
   const resetSearch = () => {
     setSearchValue('');
     setFiltersubs(subtitles);
-    selectSubAtCurrentTime();
   };
 
   const scrollToSub = (subtitle: TSubtitle, behavior: string = 'smooth') => {
