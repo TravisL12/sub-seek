@@ -26,14 +26,18 @@ export const useAuth = () => {
     };
   }, [servers]);
 
-  const getAuth = async (serverDevices: any) => {
-    let currentServer = serverDevices.find((device: any) => {
+  const getAuth = async (serverDevices?: TServerDevice[]) => {
+    if (!serverDevices) {
+      return;
+    }
+
+    let currentServer = serverDevices.find((device) => {
       return location.hash.includes(device.remoteClientIdentifier);
     });
 
     if (!currentServer) {
       // if you can't match the hash, then find any server that has the local token
-      currentServer = serverDevices.find((device: any) => {
+      currentServer = serverDevices.find((device) => {
         return device.token === localToken;
       });
     }
@@ -46,7 +50,6 @@ export const useAuth = () => {
       const newAuth = { token, serverUrl, clientIdentifier };
       setAuth(newAuth);
       setCurrentServerId(currentServer.remoteClientIdentifier);
-      console.log('---- Subseek AUTH ----', newAuth);
     }
   };
 

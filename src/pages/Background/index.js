@@ -5,19 +5,12 @@ chrome.action.onClicked.addListener(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const activeTab = tabs[0];
       if (!activeTab.url.includes('plex.tv')) {
-        console.log('Not on Plex!');
         return;
       }
 
-      if (isOpen) {
-        chrome.tabs.sendMessage(activeTab.id, {
-          message: 'closeSubSeek',
-        });
-      } else {
-        chrome.tabs.sendMessage(activeTab.id, {
-          message: 'openSubSeek',
-        });
-      }
+      chrome.tabs.sendMessage(activeTab.id, {
+        message: isOpen ? 'closeSubSeek' : 'openSubSeek',
+      });
       isOpen = !isOpen;
     });
   } catch (err) {

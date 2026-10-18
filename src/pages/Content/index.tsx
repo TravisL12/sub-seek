@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import SubtitleSearch from './components/SubtitleSearch';
+import { TAppOptions } from './components/types';
 import { useAuth } from './hooks/useAuth';
 import { useMutation } from './hooks/useMutation';
 
@@ -14,7 +15,7 @@ container.id = 'content-container';
 document.body.appendChild(container);
 const root = createRoot(container);
 
-const App = ({ options }: any) => {
+const App = ({ options }: { options: TAppOptions }) => {
   const { auth } = useAuth();
   const { seek } = useMutation({ auth, options });
   return !!seek ? <SubtitleSearch subseek={seek} /> : null;
