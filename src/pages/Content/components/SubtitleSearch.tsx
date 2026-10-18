@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SUBTITLE_INDICES } from '../constants';
 import { useEventSource } from '../hooks/useEventSource';
 import { useToggleSidebar } from '../hooks/useToggleSidebar';
+import { usePlexButton } from '../hooks/usePlexButton';
 import { setLocalChrome } from '../modules/storageHelpers';
 import SubseekLogo from '../../../assets/img/SubSeekLogo.png';
 
@@ -63,9 +64,11 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     }
   }, [nowPlaying?.state, subseek?.videoEl]);
 
-  const { closeSubSeek, isClosed } = useToggleSidebar({
+  const { closeSubSeek, openSubSeek, isClosed } = useToggleSidebar({
     setSelectedSub,
   });
+
+  usePlexButton({ isClosed, openSubSeek, closeSubSeek });
 
   useEffect(() => {
     if (!isClosed) {
