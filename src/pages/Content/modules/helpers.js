@@ -49,7 +49,8 @@ export const getServerUrl = async (server, clientIdentifier) => {
     });
   });
 
-  const serverUrl = await Promise.race(connectionHealth.filter((x) => x));
+  // First connection that responds. A race would reject if an unreachable one failed first
+  const serverUrl = await Promise.any(connectionHealth.filter((x) => x));
   return serverUrl;
 };
 

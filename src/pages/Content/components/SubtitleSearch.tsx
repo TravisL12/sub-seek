@@ -102,9 +102,11 @@ const SubtitleSearch = ({ subseek }: { subseek: TSubseek }) => {
     try {
       const subs = await subseek.getSubtitles(
         nowPlaying!.ratingKey,
-        undefined,
         isNewChoice
       );
+      if (!subs) {
+        return;
+      }
       const subsWithRef = subs.map((sub) => ({
         ...sub,
         text: sub.text.replace(/<\/?\S>/gi, ''),

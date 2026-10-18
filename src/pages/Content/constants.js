@@ -12,7 +12,11 @@ export const PLEX_TV_URL =
 export const VIDEO_PLAYER_SELECTOR = 'video[class^="HTMLMedia-mediaElement"]';
 
 export const SUBTITLE_INDICES = 'subtitleIndices';
-export const LOCAL_OPTIONS = [SUBTITLE_INDICES];
+export const SUBTITLE_STREAM_KEYS = 'subtitleStreamKeys';
+export const LOCAL_OPTIONS = [SUBTITLE_INDICES, SUBTITLE_STREAM_KEYS];
+
+// How many seconds to wait for Plex to finish downloading a subtitle file
+export const DOWNLOAD_POLL_ATTEMPTS = 10;
 
 // Seeking to a line starts this many seconds early so the line isn't clipped
 export const SEEK_LEAD_IN_SECONDS = 1.5;

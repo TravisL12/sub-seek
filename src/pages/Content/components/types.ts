@@ -1,5 +1,5 @@
 import React from 'react';
-import { SUBTITLE_INDICES } from '../constants';
+import { SUBTITLE_INDICES, SUBTITLE_STREAM_KEYS } from '../constants';
 
 export type TAuth = {
   token: string;
@@ -43,11 +43,11 @@ export type TPlaySessionState = {
 };
 
 export type TSubseek = {
+  // Resolves to undefined when a newer load started before this one finished
   getSubtitles: (
     keyId: string,
-    prevSub?: any,
     isNewChoice?: boolean
-  ) => Promise<TSubtitle[]>;
+  ) => Promise<TSubtitle[] | undefined>;
   getEvents: () => EventSource;
   getMetadata: (keyId: string) => void;
   videoEl?: HTMLVideoElement;
@@ -60,4 +60,5 @@ export type TSubseek = {
 
 export type TAppOptions = {
   [SUBTITLE_INDICES]?: { [key: string]: number };
+  [SUBTITLE_STREAM_KEYS]?: { [key: string]: string };
 };
