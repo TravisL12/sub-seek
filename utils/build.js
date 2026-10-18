@@ -4,24 +4,27 @@ process.env.NODE_ENV = 'production';
 process.env.ASSET_PATH = '/';
 
 const webpack = require('webpack');
-const path = require('path');
-const fs = require('fs');
 const config = require('../webpack.config');
-const ZipPlugin = require('zip-webpack-plugin');
 
 delete config.chromeExtensionBoilerplate;
 
 config.mode = 'production';
 
-const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+webpack(config, function (err, stats) {
+  // `err` only covers fatal webpack failures; a compilation error (a broken
+  // import, a type error) lands on `stats` instead. Exiting non-zero keeps
+  // `yarn package` from zipping up a stale build/
+  if (err) {
+    console.error(err.stack || err);
+    process.exit(1);
+  }
 
-config.plugins = (config.plugins || []).concat(
-  new ZipPlugin({
-    filename: `${packageInfo.name}-${packageInfo.version}.zip`,
-    path: path.join(__dirname, '../', 'zip'),
-  })
-);
+  if (stats.hasErrors()) {
+    console.error(
+      stats.toString({ all: false, errors: true, errorDetails: true })
+    );
+    process.exit(1);
+  }
 
-webpack(config, function (err) {
-  if (err) throw err;
+  console.log(stats.toString({ all: false, warnings: true, assets: true }));
 });

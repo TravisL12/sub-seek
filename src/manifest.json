@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "SubSeek",
-  "description": "Seek to parts of a movie by searching the subtitles",
+  "name": "SubSeek: Search Plex Subtitles & Jump to Any Scene",
+  "short_name": "SubSeek",
+  "description": "Find any scene in your Plex movies by searching what was said. Type a quote, click the line, and jump straight to that moment.",
   "background": { "service_worker": "background.bundle.js" },
   "permissions": ["storage", "activeTab"],
   "action": {
